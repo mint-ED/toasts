@@ -1311,7 +1311,7 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
 
 pragma solidity >=0.7.0 <0.9.0;
 
-contract mintedfaber is ERC721Enumerable, Ownable {
+contract mintedfaber2004 is ERC721Enumerable, Ownable {
   using Strings for uint256;
 
   string public baseURI;
@@ -1341,29 +1341,6 @@ contract mintedfaber is ERC721Enumerable, Ownable {
   // internal
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
-  }
-
-  // public
-  function mint(uint256 _mintAmount) public payable {
-    require(!paused, "the contract is paused");
-    uint256 supply = totalSupply();
-    require(_mintAmount > 0, "need to mint at least 1 NFT");
-    require(_mintAmount <= maxMintAmount, "max mint amount per session exceeded");
-    require(supply + _mintAmount <= maxSupply, "max NFT limit exceeded");
-
-    if (msg.sender != owner()) {
-        if(onlyAdmins == true) {
-            require(isAdmin(msg.sender), "user is not admin");
-            uint256 ownerMintedCount = addressMintedBalance[msg.sender];
-            require(ownerMintedCount + _mintAmount <= nftPerAddressLimit, "max NFT per address exceeded");
-        }
-        require(msg.value >= cost * _mintAmount, "insufficient funds");
-    }
-    
-    for (uint256 i = 1; i <= _mintAmount; i++) {
-        addressMintedBalance[msg.sender]++;
-      _safeMint(msg.sender, supply + i);
-    }
   }
   
   function isAdmin(address _user) public view returns (bool) {
@@ -1489,13 +1466,3 @@ contract mintedfaber is ERC721Enumerable, Ownable {
   }
 
 }
-
-/*
-["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
-"0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2",
-"0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db"]
-
-["123",
-"124",
-"125"]
-*/
