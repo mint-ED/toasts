@@ -991,7 +991,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
-// File: Minted-Appreciation.sol
+// File: mintED-TOAST.sol
 
 pragma solidity ^0.8.0;
 
@@ -1017,10 +1017,10 @@ abstract contract Ownable {
     }
 }
 
-contract MintedTOA is ERC1155, Ownable {
+contract TOAST is ERC1155, Ownable {
     constructor() ERC1155("") {}
 
-    // Embedded Library Stuffs
+    // internal function to build urls
     function _toString(uint256 value_) internal pure returns (string memory) {
         if (value_ == 0) { return "0"; }
         uint256 _iterate = value_; uint256 _digits;
@@ -1031,30 +1031,31 @@ contract MintedTOA is ERC1155, Ownable {
     }
 
     // Token Names and Symbols
-    string public name = "Mint-ed Tokens of Appreciation";
-    string public symbol = "MintedTOA";
+    string public name = "MintED Tokens of Appreciation";
+    string public symbol = "TOAST";
     function setNameAndSymbol(string memory name_) external onlyOwner { name = name_; }
     function setTokenSymbol(string memory symbol_) external onlyOwner { symbol = symbol_; }
 
-    // Token URI Stuff
+    // Token URIs
     string internal baseTokenURI;
     string internal baseTokenURI_EXT;
     string internal universalBaseTokenURI;
     mapping(uint256 => string) internal tokenIdToTokenURI;
 
-    //dynamic token address
+    //dynamic token address: option 1
     function setBaseTokenURI(string memory uri_, string memory ext_) external onlyOwner {
         baseTokenURI = uri_; baseTokenURI_EXT = ext_; }
 
-    //harded-coded token adress
+    //future use: option 2
+    function setUniversalBaseTokenURI(string memory uri_) external onlyOwner {
+        universalBaseTokenURI = uri_; }
+    
+    //harded-coded token adress: option 3
     function setTokenIdToTokenURI(uint256 tokenId_, string memory uri_) external onlyOwner {
         tokenIdToTokenURI[tokenId_] = uri_; }
 
-    //future use 
-    function setUniversalBaseTokenURI(string memory uri_) external onlyOwner {
-        universalBaseTokenURI = uri_; }
-
-    uint256 public tokenURIOption = 1;
+    //default to providing full URI, with different base for each image/metadata.  this approach allows for adding new ipfs addresses easily
+    uint256 public tokenURIOption = 3;
     function setTokenURIOption(uint256 option_) external onlyOwner { tokenURIOption = option_; }
     
     function uri(uint256 tokenId_) public view override returns (string memory) {
