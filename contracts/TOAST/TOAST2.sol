@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 // Mint-ED Tokens of Appreciation ERC1155 Contract 
-// Much thanks to Non-Fungible Fungi project for inspiration
 
 // File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol
 
@@ -1079,15 +1078,17 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
     constructor() ERC1155("") {}
 
     //Supply
-    mapping(uint256 => uint256) public tokenIdtoTokenMaxSupply;
+    mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
 
     function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyOwner {
+        require(maxSupply_ >= totalSupply(tokenId_), "max supply must be greater than current supply");
+        
         tokenIdtoTokenMaxSupply[tokenId_] = maxSupply_; }
 
     function getTokenMaxSupply(uint256 tokenId_)  external view onlyOwner returns(uint256) {
         return tokenIdtoTokenMaxSupply[tokenId_]; }
 
-    function getTokenSupply(uint256 tokenId_) external view onlyOwner returns(uint256){
+    function getTokenCurrentSupply(uint256 tokenId_) external view onlyOwner returns(uint256){
         return totalSupply(tokenId_); }
 
 
@@ -1134,17 +1135,40 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         // Options System for Future Compatibility
         if (tokenURIOption == 1) { return string(abi.encodePacked(baseTokenURI, _toString(tokenId_), baseTokenURI_EXT)); }
         else if (tokenURIOption == 2) { return universalBaseTokenURI; }
-        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_]; }
+        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_];} 
+        else { return tokenIdToTokenURI[tokenId_];}
     }
 
     // Airdrop Functions
     function airdropSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
+        require(amount_ > 0, "need to mint at least 1 NFT");
+        uint256 supply = totalSupply(id_);
+        //only check against max supply if the token's max supply has been set
+        if (tokenIdtoTokenMaxSupply[id_] > 0){
+            require(supply + amount_ <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
+        }
+        
         _mint(to_, id_, amount_, data_);
     }
+    //setting max supply needs to be fixed
     function airdropManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
+        for (uint256 i = 0; i > ids_.length; i++){
+            uint256 supply = totalSupply(ids_[i]);
+            if (tokenIdtoTokenMaxSupply[ids_[i]] > 0){
+                require(supply + amounts_[i] <= tokenIdtoTokenMaxSupply[ids_[i]], "max NFT limit exceeded");
+            }
+        }
+
         _mintBatch(to_, ids_, amounts_, data_);
     }
     function airdropSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
+        require(amount_ > 0, "need to mint at least 1 NFT");
+        uint256 supply = totalSupply(id_);
+        //only check against max supply if the token's max supply has been set
+        if (tokenIdtoTokenMaxSupply[id_] > 0){
+            require(supply + (amount_ * tos_.length) <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
+        }
+        
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], id_, amount_, data_);
         }
