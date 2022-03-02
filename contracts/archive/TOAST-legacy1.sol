@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // Mint-ED Tokens of Appreciation ERC1155 Contract 
+// Much thanks to Non-Fungible Fungi project for inspiration
 
 // File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol
 
@@ -990,65 +991,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
-// File: @openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol
-
-
-// OpenZeppelin Contracts v4.4.1 (token/ERC1155/extensions/ERC1155Supply.sol)
-
-pragma solidity ^0.8.0;
-
-
-/**
- * @dev Extension of ERC1155 that adds tracking of total supply per id.
- *
- * Useful for scenarios where Fungible and Non-fungible tokens have to be
- * clearly identified. Note: While a totalSupply of 1 might mean the
- * corresponding is an NFT, there is no guarantees that no other token with the
- * same id are not going to be minted.
- */
-abstract contract ERC1155Supply is ERC1155 {
-    mapping(uint256 => uint256) private _totalSupply;
-
-    /**
-     * @dev Total amount of tokens in with a given id.
-     */
-    function totalSupply(uint256 id) public view virtual returns (uint256) {
-        return _totalSupply[id];
-    }
-
-    /**
-     * @dev Indicates whether any token exist with a given id, or not.
-     */
-    function exists(uint256 id) public view virtual returns (bool) {
-        return ERC1155Supply.totalSupply(id) > 0;
-    }
-
-    /**
-     * @dev See {ERC1155-_beforeTokenTransfer}.
-     */
-    function _beforeTokenTransfer(
-        address operator,
-        address from,
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) internal virtual override {
-        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
-
-        if (from == address(0)) {
-            for (uint256 i = 0; i < ids.length; ++i) {
-                _totalSupply[ids[i]] += amounts[i];
-            }
-        }
-
-        if (to == address(0)) {
-            for (uint256 i = 0; i < ids.length; ++i) {
-                _totalSupply[ids[i]] -= amounts[i];
-            }
-        }
-    }
-}
+// File: mintED-TOAST.sol
 
 pragma solidity ^0.8.0;
 
@@ -1074,24 +1017,8 @@ abstract contract Ownable {
     }
 }
 
-contract TOAST is ERC1155, ERC1155Supply, Ownable {
+contract TOAST is ERC1155, Ownable {
     constructor() ERC1155("") {}
-
-    //Supply
-    mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
-
-    function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyOwner {
-        require(maxSupply_ >= totalSupply(tokenId_), "max supply must be greater than current supply");
-        
-        tokenIdtoTokenMaxSupply[tokenId_] = maxSupply_; }
-
-    function getTokenMaxSupply(uint256 tokenId_)  external view onlyOwner returns(uint256) {
-        return tokenIdtoTokenMaxSupply[tokenId_]; }
-
-    function getTokenCurrentSupply(uint256 tokenId_) external view onlyOwner returns(uint256){
-        return totalSupply(tokenId_); }
-
-
 
     // internal function to build urls
     function _toString(uint256 value_) internal pure returns (string memory) {
@@ -1135,39 +1062,17 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         // Options System for Future Compatibility
         if (tokenURIOption == 1) { return string(abi.encodePacked(baseTokenURI, _toString(tokenId_), baseTokenURI_EXT)); }
         else if (tokenURIOption == 2) { return universalBaseTokenURI; }
-        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_];} 
-        else { return tokenIdToTokenURI[tokenId_];}
+        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_]; }
     }
 
     // Airdrop Functions
     function airdropSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
-        require(amount_ > 0, "need to mint at least 1 NFT");
-        uint256 supply = totalSupply(id_);
-        //only check against max supply if the token's max supply has been set
-        if (tokenIdtoTokenMaxSupply[id_] > 0){
-            require(supply + amount_ <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
-        }
-        
         _mint(to_, id_, amount_, data_);
     }
     function airdropManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
-        for (uint256 i = 0; i < ids_.length; i++){
-            uint256 supply = totalSupply(ids_[i]);
-            if (tokenIdtoTokenMaxSupply[ids_[i]] > 0){
-                require(supply + amounts_[i] <= tokenIdtoTokenMaxSupply[ids_[i]], "max NFT limit exceeded");
-            }
-        }
-
         _mintBatch(to_, ids_, amounts_, data_);
     }
     function airdropSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
-        require(amount_ > 0, "need to mint at least 1 NFT");
-        uint256 supply = totalSupply(id_);
-        //only check against max supply if the token's max supply has been set
-        if (tokenIdtoTokenMaxSupply[id_] > 0){
-            require(supply + (amount_ * tos_.length) <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
-        }
-        
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], id_, amount_, data_);
         }
@@ -1191,27 +1096,4 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
             "ERC1155: caller is not owner nor approved");
         _burnBatch(account, ids, values);
     }
-
-
-     // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
-        internal
-        override(ERC1155, ERC1155Supply)
-    {
-        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
-    }
-
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC1155)
-        returns (bool)
-    {
-        return interfaceId == type(IERC1155).interfaceId || super.supportsInterface(interfaceId);
-    }
-
 }
