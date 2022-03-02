@@ -1150,9 +1150,8 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         
         _mint(to_, id_, amount_, data_);
     }
-    //setting max supply needs to be fixed
     function airdropManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
-        for (uint256 i = 0; i > ids_.length; i++){
+        for (uint256 i = 0; i < ids_.length; i++){
             uint256 supply = totalSupply(ids_[i]);
             if (tokenIdtoTokenMaxSupply[ids_[i]] > 0){
                 require(supply + amounts_[i] <= tokenIdtoTokenMaxSupply[ids_[i]], "max NFT limit exceeded");
