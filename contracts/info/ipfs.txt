@@ -1,0 +1,1 @@
+genesis:  ipfs://QmSSZCB4d5hEN578rXRnSdM1RiawmLDy6FfNFhQAdVammT/0.json

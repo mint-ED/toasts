@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-// Mint-ED Tokens of Appreciation ERC1155 Contract 
-// Much thanks to Non-Fungible Fungi project for inspiration
+//**************************************************************
+// Mint-ED Tokens of Appreciation (TOASTs) ERC1155 Contract 
+//**************************************************************
+
 
 // File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol
 
@@ -1075,10 +1077,14 @@ abstract contract Ownable {
     }
 }
 
+//**************************************************************
+// Mint-ED Tokens of Appreciation (TOASTs) ERC1155 Contract 
+//**************************************************************
+
 contract TOAST is ERC1155, ERC1155Supply, Ownable {
     constructor() ERC1155("") {}
 
-    //Supply
+    //Check and Set Max Supply of each tokenId
     mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
 
     function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyOwner {
@@ -1094,7 +1100,7 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
 
 
 
-    // internal function to build urls
+    // internal function to build urls 
     function _toString(uint256 value_) internal pure returns (string memory) {
         if (value_ == 0) { return "0"; }
         uint256 _iterate = value_; uint256 _digits;
@@ -1105,7 +1111,7 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
     }
 
     // Token Names and Symbols
-    string public name = "MintED Tokens of Appreciation";
+    string public name = "Mint-ED Tokens of Appreciation (TOASTs)";
     string public symbol = "TOAST";
     function setNameAndSymbol(string memory name_) external onlyOwner { name = name_; }
     function setTokenSymbol(string memory symbol_) external onlyOwner { symbol = symbol_; }
@@ -1120,7 +1126,7 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
     function setBaseTokenURI(string memory uri_, string memory ext_) external onlyOwner {
         baseTokenURI = uri_; baseTokenURI_EXT = ext_; }
 
-    //future use: option 2
+    //universal base address: option 2
     function setUniversalBaseTokenURI(string memory uri_) external onlyOwner {
         universalBaseTokenURI = uri_; }
     
@@ -1136,7 +1142,8 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         // Options System for Future Compatibility
         if (tokenURIOption == 1) { return string(abi.encodePacked(baseTokenURI, _toString(tokenId_), baseTokenURI_EXT)); }
         else if (tokenURIOption == 2) { return universalBaseTokenURI; }
-        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_]; }
+        else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_];} 
+        else { return tokenIdToTokenURI[tokenId_];}
     }
 
     // Airdrop Functions
@@ -1151,9 +1158,26 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         _mint(to_, id_, amount_, data_);
     }
     function airdropManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
+        //check if max supply for each token will be exceeded
+        for (uint256 i = 0; i < ids_.length; i++){
+            uint256 supply = totalSupply(ids_[i]);
+            if (tokenIdtoTokenMaxSupply[ids_[i]] > 0){
+                require(supply + amounts_[i] <= tokenIdtoTokenMaxSupply[ids_[i]], "max NFT limit exceeded");
+            }
+        }
+
+        //mint
         _mintBatch(to_, ids_, amounts_, data_);
     }
     function airdropSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
+        require(amount_ > 0, "need to mint at least 1 NFT");
+        uint256 supply = totalSupply(id_);
+        //only check against max supply if the token's max supply has been set
+        if (tokenIdtoTokenMaxSupply[id_] > 0){
+            require(supply + (amount_ * tos_.length) <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
+        }
+        
+        //mint
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], id_, amount_, data_);
         }
@@ -1161,6 +1185,16 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
     function airdropManyToMany(address[] memory tos_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
         require(tos_.length == ids_.length && tos_.length == amounts_.length, 
             "airdropSingleToMany: Array lengths mismatch!");
+
+        //check if max supply for each token will be exceeded
+        for (uint256 i = 0; i < ids_.length; i++){
+            uint256 supply = totalSupply(ids_[i]);
+            if (tokenIdtoTokenMaxSupply[ids_[i]] > 0){
+                require(supply + amounts_[i] <= tokenIdtoTokenMaxSupply[ids_[i]], "max NFT limit exceeded");
+            }
+        }
+
+        //mint
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], ids_[i], amounts_[i], data_);
         }
