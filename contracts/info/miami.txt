@@ -1,6 +1,30 @@
+website: https://sneakerlaw.com/pages/miami-law
+
 
 
 Admin Account:  0x6CdCCf2C6d5D0373f840e0913959097aCA57c184
 
-website: https://sneakerlaw.com/pages/miami-law
+
+anon1: 0x63db7E59113271197c5c65f965cC26daa828Bc2A
+
+Testnet: 0xA37588E5Ea60FEfc8a1b20d8F81e835570A23023
+
+Contract Name: Miami Law - Sneakerlaw
+Contract Symbol: SNEAKER 
+
+setBaseTokenUri
+ipfs://QmTJxbi7Spn3upYdavuGJPvRHKSqM9dz3rqdke84sNnwG81/
+.json
+
+
+Award Token
+tokenid: 0
+uri: tbd
+max supply: 1
+
+Participant Token:
+tokenid: 1
+uri: tbd
+max supply: 44
+
 

@@ -1,0 +1,15 @@
+
+
+ipfs
+images: QmVj8y9kfSM6W6Uqon5z61NchhSj5ANvvj3tksB25VgQ1F
+metadata: Qmd2PJxX9KmJHZsPHkT2YVQCB47DnSJbu49p8LXympn5Da
+
+uri:  ipfs://Qmd2PJxX9KmJHZsPHkT2YVQCB47DnSJbu49p8LXympn5Da/0.json
+
+owner: 0x7fc2f132F3A6Af56433e26978A466eaAFDffb595
+
+
+
+
+
+

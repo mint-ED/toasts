@@ -1100,7 +1100,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         tokenIdtoCost[tokenId_] = cost_;
   }
 
-    function getTokenCost(uint256 tokenId_) external view onlyOwner returns(uint256) {
+    function getTokenCost(uint256 tokenId_) external view returns(uint256) {
         return tokenIdtoCost[tokenId_];
   }
   //-------------------------------------------------------

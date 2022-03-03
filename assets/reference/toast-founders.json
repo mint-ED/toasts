@@ -1,0 +1,28 @@
+{
+    "name": "mintED Token of Appreciation",
+    "description": "A mintED Toast (Token of Appreciation) can be provided for any occasion, large or small.  These Founders TOASTs are provided to the original founders of mintED to commemorate our excitement for the upcoming journey.  Also: to test the TOASTs smart contract on mainnet.  Join us @ https://www.gotminted.xyz/.",
+    "image": "ipfs://QmWgRJryt15zyF6VMqukrQ7nvg2xGuMxAFf84GPdqFPizE/0.gif",
+    "attributes": [
+      {
+        "trait_type": "Creator",
+        "value": "mintED"
+      },
+      {
+        "trait_type": "Occasion",
+        "value": "Company Founding"
+      },
+      {
+        "trait_type": "Occasion",
+        "value": "Company Founding"
+      },
+      {
+        "trait_type": "Collection",
+        "value": "Genesis"
+      },
+      {
+        "display_type": "date", 
+        "trait_type": "Minted Date", 
+        "value": 1646327849
+      }
+    ]
+  }
