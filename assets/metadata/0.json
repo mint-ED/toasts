@@ -1,16 +1,16 @@
 {
-  "name": "mintED Token of Appreciation (TOAST)",
-  "description": "The mint-ED Toast Genesis collection represents 'tokens' of appreciation for the early supporters of mint-ED. The Genesis collection is awarded to the first 50 supporters of mint-ED.  Let's help usher in the next generation of Web3 enthusiasts! Follow along at https://www.mint-ed.app/",
+  "name": "mintED Token of Appreciation",
+  "description": "The mintED Toast Genesis collection represents 'tokens' of appreciation for the early supporters of mintED. The Genesis collection is awarded to the first 50 supporters of mintED.  Let's help usher in the next generation of Web3 enthusiasts! Follow along at https://www.gotminted.xyz/",
   "image": "ipfs://QmWgRJryt15zyF6VMqukrQ7nvg2xGuMxAFf84GPdqFPizE/0.gif",
   "edition": 1,
   "attributes": [
     {
       "trait_type": "Creator",
-      "value": "MintED"
+      "value": "mintED"
     },
     {
       "trait_type": "Organization",
-      "value": "MintED"
+      "value": "mintED"
     },
     {
       "trait_type": "Collection",
