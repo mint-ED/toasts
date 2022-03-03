@@ -1,0 +1,26 @@
+{
+    "name": "Sneaker Party",
+    "description": "Congrats!  u won the sneaker party",
+    "image": "ipfs://QmayQLc4nGnkDcmnt5QDK9SvTNZkzaJzdS353sgeCN1yog/0.png",
+    "edition": 1,
+    "attributes": [
+      {
+        "trait_type": "Creator",
+        "value": "Miami"
+      },
+      {
+        "trait_type": "Award",
+        "value": "Winner"
+      },
+      {
+        "trait_type": "Item",
+        "value": "Shoe"
+      },
+      {
+        "trait_type": "Color",
+        "value": "Gold"
+      }
+    ]
+  }
+  
+  

@@ -1,0 +1,26 @@
+{
+    "name": "Sneaker Party",
+    "description": "Thanks for participating in the Sneaker Party",
+    "image": "ipfs://QmayQLc4nGnkDcmnt5QDK9SvTNZkzaJzdS353sgeCN1yog/1.png",
+    "edition": 1,
+    "attributes": [
+      {
+        "trait_type": "Creator",
+        "value": "Miami"
+      },
+      {
+        "trait_type": "Award",
+        "value": "Participant"
+      },
+      {
+        "trait_type": "Item",
+        "value": "Shoe"
+      },
+      {
+        "trait_type": "Color",
+        "value": "White"
+      }
+    ]
+  }
+  
+  
