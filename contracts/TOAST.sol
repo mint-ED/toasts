@@ -1078,11 +1078,55 @@ abstract contract Ownable {
 }
 
 //**************************************************************
-// Mint-ED Tokens of Appreciation (TOASTs) ERC1155 Contract 
+// Mint-ED TOASTS ERC1155 Contract 
 //**************************************************************
 
-contract TOAST is ERC1155, ERC1155Supply, Ownable {
+contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     constructor() ERC1155("") {}
+
+    //Manage Pausing
+    bool public paused = false;
+
+    function setPause(bool _state) external onlyOwner {
+        paused = _state;
+  }
+    //-------------------------------------------------------
+
+    //Manage Cost (potential future use.  won't be used for primary sales)
+    mapping(uint256 => uint256) private tokenIdtoCost;
+
+
+    function setTokenCost(uint256 tokenId_, uint256 cost_) external onlyOwner {
+        tokenIdtoCost[tokenId_] = cost_;
+  }
+
+    function getTokenCost(uint256 tokenId_) external view onlyOwner returns(uint256) {
+        return tokenIdtoCost[tokenId_];
+  }
+  //-------------------------------------------------------
+
+    //Manage Admins
+    bool public onlyAdmins = true;  
+    address payable [] public adminAddresses;  
+
+    function setOnlyAdmins(bool _state) external onlyOwner {
+        onlyAdmins = _state;
+  }
+
+    function createAdminList(address payable[] calldata _users) external onlyOwner {
+        delete adminAddresses;
+        adminAddresses = _users;
+  }
+     
+    function isAdmin(address _user) public view returns (bool) {
+        for (uint i = 0; i < adminAddresses.length; i++) {
+            if (adminAddresses[i] == _user) {
+                return true;
+            }
+        }
+        return false;
+    }
+    //-------------------------------------------------------
 
     //Check and Set Max Supply of each tokenId
     mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
@@ -1097,10 +1141,9 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
 
     function getTokenCurrentSupply(uint256 tokenId_) external view onlyOwner returns(uint256){
         return totalSupply(tokenId_); }
+    //-------------------------------------------------------
 
-
-
-    // internal function to build urls 
+    // Internal Functions
     function _toString(uint256 value_) internal pure returns (string memory) {
         if (value_ == 0) { return "0"; }
         uint256 _iterate = value_; uint256 _digits;
@@ -1109,14 +1152,19 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         while (value_ != 0) { _digits--; _buffer[_digits] = bytes1(uint8(48 + uint256(value_ % 10 ))); value_ /= 10; } // create bytes of value_
         return string(_buffer); // return string converted bytes of value_
     }
+    //-------------------------------------------------------
 
-    // Token Names and Symbols
-    string public name = "Mint-ED Tokens of Appreciation (TOASTs)";
-    string public symbol = "TOAST";
-    function setNameAndSymbol(string memory name_) external onlyOwner { name = name_; }
-    function setTokenSymbol(string memory symbol_) external onlyOwner { symbol = symbol_; }
+    // Manage Name/Symbol
+    string public name = "mintED Toasts";
+    string public symbol = "TOASTS";
+    function setNameAndSymbol(string memory name_, string memory symbol_) external onlyOwner 
+        { 
+            name = name_; 
+            symbol = symbol_;
+        }
+    //-------------------------------------------------------
 
-    // Token URIs
+    // Manage Token URIs
     string internal baseTokenURI;
     string internal baseTokenURI_EXT;
     string internal universalBaseTokenURI;
@@ -1135,7 +1183,7 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         tokenIdToTokenURI[tokenId_] = uri_; }
 
     //default to providing full URI, with different base for each image/metadata.  this approach allows for adding new ipfs addresses easily
-    uint256 public tokenURIOption = 3;
+    uint256 public tokenURIOption = 1;
     function setTokenURIOption(uint256 option_) external onlyOwner { tokenURIOption = option_; }
     
     function uri(uint256 tokenId_) public view override returns (string memory) {
@@ -1145,19 +1193,31 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         else if (tokenURIOption == 3) { return tokenIdToTokenURI[tokenId_];} 
         else { return tokenIdToTokenURI[tokenId_];}
     }
+    //-------------------------------------------------------
 
-    // Airdrop Functions
-    function airdropSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
+    // Manage Minting
+    function mintSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external {
+        require(!paused, "the contract is paused");
         require(amount_ > 0, "need to mint at least 1 NFT");
+        
         uint256 supply = totalSupply(id_);
         //only check against max supply if the token's max supply has been set
         if (tokenIdtoTokenMaxSupply[id_] > 0){
             require(supply + amount_ <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
         }
+
+        if (msg.sender != owner) {
+            if(onlyAdmins == true) {
+                require(isAdmin(msg.sender), "user is not an admin");
+            }
+        }
         
         _mint(to_, id_, amount_, data_);
     }
-    function airdropManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
+
+    function mintManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external {
+        require(!paused, "the contract is paused");
+        
         //check if max supply for each token will be exceeded
         for (uint256 i = 0; i < ids_.length; i++){
             uint256 supply = totalSupply(ids_[i]);
@@ -1166,15 +1226,29 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
             }
         }
 
+        if (msg.sender != owner) {
+            if(onlyAdmins == true) {
+                require(isAdmin(msg.sender), "user is not an admin");
+            }
+        }
+
         //mint
         _mintBatch(to_, ids_, amounts_, data_);
     }
-    function airdropSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external onlyOwner {
+    function mintSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external {
+        require(!paused, "the contract is paused");
         require(amount_ > 0, "need to mint at least 1 NFT");
+        
         uint256 supply = totalSupply(id_);
         //only check against max supply if the token's max supply has been set
         if (tokenIdtoTokenMaxSupply[id_] > 0){
             require(supply + (amount_ * tos_.length) <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
+        }
+
+        if (msg.sender != owner) {
+            if(onlyAdmins == true) {
+                require(isAdmin(msg.sender), "user is not an admin");
+            }
         }
         
         //mint
@@ -1182,7 +1256,8 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
             _mint(tos_[i], id_, amount_, data_);
         }
     }
-    function airdropManyToMany(address[] memory tos_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external onlyOwner {
+    function mintManyToMany(address[] memory tos_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external  {
+        require(!paused, "the contract is paused");
         require(tos_.length == ids_.length && tos_.length == amounts_.length, 
             "airdropSingleToMany: Array lengths mismatch!");
 
@@ -1194,6 +1269,12 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
             }
         }
 
+        if (msg.sender != owner) {
+            if(onlyAdmins == true) {
+                require(isAdmin(msg.sender), "user is not an admin");
+            }
+        }
+
         //mint
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], ids_[i], amounts_[i], data_);
@@ -1202,11 +1283,13 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
 
     // Burnable
     function burn(address account, uint256 id, uint256 value) public virtual {
+        require(!paused, "the contract is paused");
         require(account == _msgSender() || isApprovedForAll(account, _msgSender()),
             "ERC1155: caller is not owner nor approved");
         _burn(account, id, value);
     }
     function burnBatch(address account, uint256[] memory ids, uint256[] memory values) public virtual {
+        require(!paused, "the contract is paused");
         require(account == _msgSender() || isApprovedForAll(account, _msgSender()),
             "ERC1155: caller is not owner nor approved");
         _burnBatch(account, ids, values);
@@ -1232,6 +1315,10 @@ contract TOAST is ERC1155, ERC1155Supply, Ownable {
         returns (bool)
     {
         return interfaceId == type(IERC1155).interfaceId || super.supportsInterface(interfaceId);
+    }
+
+    function withdraw() public payable onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
     }
 
 }
