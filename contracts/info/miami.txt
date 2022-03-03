@@ -7,6 +7,8 @@ Admin Account:  0x6CdCCf2C6d5D0373f840e0913959097aCA57c184
 
 anon1: 0x63db7E59113271197c5c65f965cC26daa828Bc2A
 
+//************   TESTNET   *******************************
+
 Testnet: 0xA37588E5Ea60FEfc8a1b20d8F81e835570A23023
 
 Contract Name: Miami Law - Sneakerlaw
@@ -27,4 +29,15 @@ tokenid: 1
 uri: tbd
 max supply: 44
 
+
+images
+winner: QmNdzjB98AxgwL8pHUo9S12fuYvpE1q9Zzfe7Nrysnd2Ve/0.gif
+participant: QmQ6fxJjyQ1KvVPdKC4EJmqw2jWUrM1QwYA3D1ZTzLsmJQ/1.png
+meta: QmbvxEbxNi4S8BNZ2YcSkDqEDearnFjnHjXb8UmqE3kaWj
+
+//************   MAINNET   *******************************
+
+admin account: 0x6CdCCf2C6d5D0373f840e0913959097aCA57c184
+
+metadata:   ipfs://QmSocUuqCgcZvc7SL8dYDAitH2e4KDB1axmkoC3usev2dF/
 
