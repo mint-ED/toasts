@@ -6,7 +6,7 @@ metadata: Qmd1vbBsFepRcBP3Pvn37dZX1VZwNxtb7hXTZzNXnjbHEv
 
 uri:  
     ipfs://Qmd1vbBsFepRcBP3Pvn37dZX1VZwNxtb7hXTZzNXnjbHEv/0.json
-    ipfs://QmTWMrHQwPpMus3yewtPEjkVNM8DHuSjmrUSsPZsqsUy6s/1.json (not yet mapped to tokenId 1 bc of high gas)
+    ipfs://QmTWMrHQwPpMus3yewtPEjkVNM8DHuSjmrUSsPZsqsUy6s/1.json 
 
 
 owner: 0x7fc2f132F3A6Af56433e26978A466eaAFDffb595

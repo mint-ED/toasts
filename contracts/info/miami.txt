@@ -41,3 +41,5 @@ admin account: 0x6CdCCf2C6d5D0373f840e0913959097aCA57c184
 
 metadata:   ipfs://QmSocUuqCgcZvc7SL8dYDAitH2e4KDB1axmkoC3usev2dF/
 
+contract: 0x8a3B113134AA6c5e98a06586D9b8DCc365cA2731
+
