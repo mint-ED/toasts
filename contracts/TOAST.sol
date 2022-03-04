@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 //**************************************************************
-// Mint-ED Tokens of Appreciation (TOASTs) ERC1155 Contract 
+// MintED Tokens of Appreciation (TOASTs) ERC1155 Contract 
 //**************************************************************
 
 
@@ -1078,7 +1078,7 @@ abstract contract Ownable {
 }
 
 //**************************************************************
-// Mint-ED TOASTS ERC1155 Contract 
+// MintED Tokens of Appreciation (TOASTs) ERC1155 Contract 
 //**************************************************************
 
 contract TOASTS is ERC1155, ERC1155Supply, Ownable {
@@ -1087,12 +1087,12 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     //Manage Pausing
     bool public paused = false;
 
-    function setPause(bool _state) external onlyOwner {
-        paused = _state;
+    function togglePause() external onlyOwner {
+        paused = !paused;
   }
     //-------------------------------------------------------
 
-    //Manage Cost (potential future use.  won't be used for primary sales)
+    //Manage Cost (potential future use.  Won't be used for primary sales)
     mapping(uint256 => uint256) private tokenIdtoCost;
 
 
@@ -1100,17 +1100,18 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         tokenIdtoCost[tokenId_] = cost_;
   }
 
-    function getTokenCost(uint256 tokenId_) external view onlyOwner returns(uint256) {
+    function getTokenCost(uint256 tokenId_) external view returns(uint256) {
         return tokenIdtoCost[tokenId_];
   }
   //-------------------------------------------------------
 
-    //Manage Admins
+    //Manage Admins (think: whitelist/allowlist functionality, but for administrators)
+
     bool public onlyAdmins = true;  
     address payable [] public adminAddresses;  
 
-    function setOnlyAdmins(bool _state) external onlyOwner {
-        onlyAdmins = _state;
+    function toggleOnlyAdmins() external onlyOwner {
+        onlyAdmins = !onlyAdmins;
   }
 
     function createAdminList(address payable[] calldata _users) external onlyOwner {
@@ -1128,7 +1129,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     }
     //-------------------------------------------------------
 
-    //Check and Set Max Supply of each tokenId
+    //Manage Max Supply of each Token (set to 1 for unique NFT, > 1 for unset for semi-fungible)
     mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
 
     function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyOwner {
@@ -1152,9 +1153,10 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         while (value_ != 0) { _digits--; _buffer[_digits] = bytes1(uint8(48 + uint256(value_ % 10 ))); value_ /= 10; } // create bytes of value_
         return string(_buffer); // return string converted bytes of value_
     }
+    
     //-------------------------------------------------------
 
-    // Manage Name/Symbol
+    // Manage Name & Symbol
     string public name = "mintED Toasts";
     string public symbol = "TOASTS";
     function setNameAndSymbol(string memory name_, string memory symbol_) external onlyOwner 
@@ -1182,7 +1184,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     function setTokenIdToTokenURI(uint256 tokenId_, string memory uri_) external onlyOwner {
         tokenIdToTokenURI[tokenId_] = uri_; }
 
-    //default to providing full URI, with different base for each image/metadata.  this approach allows for adding new ipfs addresses easily
+    //default to dynamic uri with assumption that all (initial) tokens will reside at the same ipfs CID
     uint256 public tokenURIOption = 1;
     function setTokenURIOption(uint256 option_) external onlyOwner { tokenURIOption = option_; }
     
@@ -1196,7 +1198,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     //-------------------------------------------------------
 
     // Manage Minting
-    function mintSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external {
+    function toastSingleToSingle(address to_, uint256 id_, uint256 amount_, bytes memory data_) external {
         require(!paused, "the contract is paused");
         require(amount_ > 0, "need to mint at least 1 NFT");
         
@@ -1215,7 +1217,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         _mint(to_, id_, amount_, data_);
     }
 
-    function mintManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external {
+    function toastManyToSingle(address to_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external {
         require(!paused, "the contract is paused");
         
         //check if max supply for each token will be exceeded
@@ -1235,7 +1237,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         //mint
         _mintBatch(to_, ids_, amounts_, data_);
     }
-    function mintSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external {
+    function toastSingleToMany(address[] memory tos_, uint256 id_, uint256 amount_, bytes memory data_) external {
         require(!paused, "the contract is paused");
         require(amount_ > 0, "need to mint at least 1 NFT");
         
@@ -1256,7 +1258,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
             _mint(tos_[i], id_, amount_, data_);
         }
     }
-    function mintManyToMany(address[] memory tos_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external  {
+    function toastManyToMany(address[] memory tos_, uint256[] memory ids_, uint256[] memory amounts_, bytes memory data_) external  {
         require(!paused, "the contract is paused");
         require(tos_.length == ids_.length && tos_.length == amounts_.length, 
             "airdropSingleToMany: Array lengths mismatch!");
@@ -1295,6 +1297,9 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         _burnBatch(account, ids, values);
     }
 
+    function withdraw() public payable onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
 
      // The following functions are overrides required by Solidity.
 
@@ -1317,8 +1322,6 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         return interfaceId == type(IERC1155).interfaceId || super.supportsInterface(interfaceId);
     }
 
-    function withdraw() public payable onlyOwner {
-        payable(msg.sender).transfer(address(this).balance);
-    }
+    
 
 }

@@ -1,26 +1,26 @@
 {
-    "name": "Sneaker Party",
-    "description": "Thanks for participating in the Sneaker Party",
-    "image": "ipfs://QmayQLc4nGnkDcmnt5QDK9SvTNZkzaJzdS353sgeCN1yog/1.png",
-    "edition": 1,
-    "attributes": [
-      {
-        "trait_type": "Creator",
-        "value": "Miami"
-      },
-      {
-        "trait_type": "Award",
-        "value": "Participant"
-      },
-      {
-        "trait_type": "Item",
-        "value": "Shoe"
-      },
-      {
-        "trait_type": "Color",
-        "value": "White"
-      }
-    ]
-  }
+  "name": "Sneakerlaw @ U of Miami",
+  "description": "Gifted to participants in the first ever Sneaker Law x Miami Law Case Study Competition + Conference: The Art of the Sneaker Deal hosted at the University of Miami on March 3-4, 2022.",
+  "image": "ipfs://QmQ6fxJjyQ1KvVPdKC4EJmqw2jWUrM1QwYA3D1ZTzLsmJQ/1.png",
+  "attributes": [
+    {
+      "trait_type": "Creator",
+      "value": "Miami Law"
+    },
+    {
+      "trait_type": "Event",
+      "value": "Sneakerlaw"
+    },
+    {
+      "trait_type": "Award",
+      "value": "Participant"
+    },
+    {
+      "display_type": "date", 
+      "trait_type": "Competition Date", 
+      "value": 1646402400
+    }
+  ]
+}
   
   
