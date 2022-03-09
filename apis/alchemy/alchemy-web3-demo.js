@@ -1,5 +1,8 @@
 // alchemy-nft-api/alchemy-web3-script.js
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
+import 'dotenv/config';
+
+console.log(process.env.TEST_URL)
 
 // Replace with your Alchemy api key:
 const apiKey = "demo";

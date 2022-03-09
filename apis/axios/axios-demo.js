@@ -1,5 +1,6 @@
 // alchemy-nft-api/axios-script.js
 import axios from 'axios';
+import 'dotenv/config';
 
 // Replace with your Alchemy API key:
 const apiKey = "demo";

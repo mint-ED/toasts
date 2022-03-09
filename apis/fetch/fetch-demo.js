@@ -1,5 +1,6 @@
 // alchemy-nft-api/fetch-script.js
 import fetch from 'node-fetch';
+import 'dotenv/config';
 
 // Setup request options:
 var requestOptions = {
