@@ -6,11 +6,25 @@ initial setup:
 npm init --yes
 npm install --save-dev hardhat
 npm install --save-dev @nomiclabs/hardhat-ethers ethers @nomiclabs/hardhat-waffle ethereum-waffle chai
+npm install dotenv --save
 npx hardhat
 ```
 
+dotenv setup: 
 
-#update hardhat.config.js to enable optimization
+```shell
+create .env file on root of backend folder
+add apikey, other keys
+add in hardhat.config.js:  require('dotenv').config() 
+```
+
+
+#update hardhat.config.js 
+
+require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ethers");
+
+to enable optimization
 
  module.exports = {
   solidity: {
