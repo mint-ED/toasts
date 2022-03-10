@@ -1283,60 +1283,6 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         }
     }
 
-    //-------------------------------------------------------
-
-    //Exchange Functionality
-
-    mapping(uint256 => uint256[]) internal NewToBurnable;
-
-    function setNewToBurnableMapping(uint256 tokenId_, uint256[] calldata burnable_) external onlyOwner {
-        //add require statements
-        
-        NewToBurnable[tokenId_] = burnable_ ; 
-    }
-
-    function getNewToBurnableMapping(uint256 tokenId_)  external view returns(uint256[] memory) {
-        return NewToBurnable[tokenId_]; 
-    }
-
-    function checkExchangeQualification(address account_, uint256 tokenIdNew_)  public view returns(bool) {
-
-        bool qualified = false;
-
-        uint256[] memory tokensRequired_ = NewToBurnable[tokenIdNew_];
-
-        for (uint256 i = 0; i < tokensRequired_.length; i++) {
-            if(!(IERC1155(this).balanceOf(account_,tokensRequired_[i]) > 0)){
-                qualified = false;
-                break;
-            }
-            else{
-                qualified = true;
-            }
-        }
-
-        return qualified; 
-    }
-
-    //exchange array of tokens for new token
-    function exchange(address account_, uint256 newTokenId_, uint256[] memory currentTokens, uint256[] memory currentTokenCounts, bytes memory data_) public virtual {
-        require(!paused, "the contract is paused");
-        require(account_ == _msgSender() || isApprovedForAll(account_, _msgSender()),
-            "ERC1155: caller is not owner nor approved");
-
-        //TODO: add require statements to check token counts arent zero, etc.
-
-        //require the account qualies for new token based on balanceOf, not existing tokens passed in
-        require(checkExchangeQualification(account_, newTokenId_), "account does not qualify for new token");
-
-        //TODO:  wrap burn and mint into same try/catch
-        _mint(account_, newTokenId_, 1, data_);
-        _burnBatch(account_, currentTokens, currentTokenCounts);
-
-        
-    }
-   //-------------------------------------------------------
-
     // Burnable
     function burn(address account, uint256 id, uint256 value) public virtual {
         require(!paused, "the contract is paused");
