@@ -1299,7 +1299,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         return NewToBurnable[tokenId_]; 
     }
 
-    function checkExchangeForTokenQualification(address account_, uint256 tokenIdNew_)  external view returns(bool) {
+    function checkExchangeQualification(address account_, uint256 tokenIdNew_)  public view returns(bool) {
 
         bool qualified = false;
 
@@ -1318,21 +1318,22 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         return qualified; 
     }
 
-
-
-
     //exchange array of tokens for new token
-    function exchange(address account, uint256[] memory ids, uint256[] memory values) public virtual {
+    function exchange(address account_, uint256 newTokenId_, uint256[] memory currentTokens, uint256[] memory currentTokenCounts, bytes memory data_) public virtual {
         require(!paused, "the contract is paused");
-        require(account == _msgSender() || isApprovedForAll(account, _msgSender()),
+        require(account_ == _msgSender() || isApprovedForAll(account_, _msgSender()),
             "ERC1155: caller is not owner nor approved");
 
-        //TODO: check old-to-new mapping
-        
-        //burn the batch of old tokens
-        _burnBatch(account, ids, values);
+        //TODO: add require statements to check token counts arent zero, etc.
 
-        //TODO: mint new token based on the mapping
+        //require the account qualies for new token based on balanceOf, not existing tokens passed in
+        require(checkExchangeQualification(account_, newTokenId_), "account does not qualify for new token");
+
+        //TODO:  wrap burn and mint into same try/catch
+        _mint(account_, newTokenId_, 1, data_);
+        _burnBatch(account_, currentTokens, currentTokenCounts);
+
+        
     }
    //-------------------------------------------------------
 
