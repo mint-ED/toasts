@@ -1,9 +1,32 @@
-# TOAST (Tokens of Appreciation)
+## mintED TOASTs (Tokens of Appreciation)
 
+coming soon
 
-Deployment Instructions:
+# Installation
 
+coming soon
+
+## Backend
+
+```sh
 tbd
+```
+
+## Frontend
+
+```sh
+tbd
+```
+
+# Configuration
+
+coming soon
+
+```js
+tbd
+```
+
+# Notes to clean up and move to above sections
 
 Config Instructions:
 
