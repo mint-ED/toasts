@@ -1,24 +1,24 @@
-## mintED TOASTs (Tokens of Appreciation)
+# mintED TOASTs (Tokens of Appreciation)
 
 coming soon
 
-# Installation
+## Installation
 
 coming soon
 
-## Backend
+### Backend
 
 ```sh
 tbd
 ```
 
-## Frontend
+### Frontend
 
 ```sh
 tbd
 ```
 
-# Configuration
+## Configuration
 
 coming soon
 
@@ -26,7 +26,7 @@ coming soon
 tbd
 ```
 
-# Notes to clean up and move to above sections
+## Notes to clean up and move to above sections
 
 Config Instructions:
 
