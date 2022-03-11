@@ -1,16 +1,28 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
+//require('@openzeppelin/hardhat-upgrades');
 require('dotenv').config()
 
-console.log("Verifying the TEST_URL is convigured via dotenv", process.env.TEST_URL);
-
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+const MUMBAI_ALCHEMY_URL  = process.env.MUMBAI_ALCHEMY_URL;
+const MUMBAI_DEV_KEY      = process.env.MUMBAI_DEV_KEY;
+const GANACHE_URL         = process.env.GANACHE_URL;
+//const GANACHE_URL       = "http://127.0.0.1:7545"
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
  module.exports = {
+  //defaultNetwork: "ganache",
+  networks: {
+      ganache: {
+          url: `${GANACHE_URL}`,
+          // accounts: [privateKey1, privateKey2, ...]
+      },
+      mumbai: {
+        url: `${MUMBAI_ALCHEMY_URL}`,
+        accounts: [`${MUMBAI_DEV_KEY}`]
+      }
+  },
   solidity: {
     version: "0.8.4",
     settings: {
