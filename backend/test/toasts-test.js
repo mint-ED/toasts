@@ -1,30 +1,21 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Toast Basic Functionality", function () {
-  it("Should set token name and symbol", async function () {
+describe("Toast Uri Functionality", function () {
+  it("Should check initial Uri Option", async function () {
     const Toast = await ethers.getContractFactory("contracts/TOAST.sol:TOASTS");
     const toast = await Toast.deploy();
     await toast.deployed();
 
-    const setNameAndSymbolTx = await toast.setNameAndSymbol("newName", "newSymbol");
-    await setNameAndSymbolTx.wait();
+    
+    expect(await toast.tokenURIOption()).to.equal("1");
 
-    //expect(await toast.symbol).to.equal("newSymbol");
+    
 
+    // const setTokenIdToTokenUriTx = await toast.setTokenIdToTokenURI(0, "ipfs-test");
+    // await setTokenIdToTokenUriTx.wait();
 
+    // expect(await toast.uri(0)).to.equal("ipfs-test");
 
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
-
-    expect(await greeter.greet()).to.equal("Hello, world!");
-
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
-
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
-
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
   });
 });
