@@ -1,7 +1,20 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Toast Basic Deploy Functionality", function () {
+describe("Core Contract", function () {
+  it("Should configure accounts correctly", async function () {
+    const [owner] = await ethers.getSigners();
+    const Toast = await ethers.getContractFactory("contracts/TOAST.sol:TOASTS");
+    const toast = await Toast.deploy();
+    await toast.deployed();
+
+    //can use to verify owner account is set correctly
+    //expect(await owner.address).to.equal("0x53fDd45246F79D252E311CB0717E90A039493fec");  
+
+  });
+});
+
+describe("Toast Basic Contract Functionality", function () {
   it("Should check initial deploy name/symbol are the default and can be updated", async function () {
     const Toast = await ethers.getContractFactory("contracts/TOAST.sol:TOASTS");
     const toast = await Toast.deploy();

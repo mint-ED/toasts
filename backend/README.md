@@ -38,6 +38,9 @@ to enable optimization
   },
 };
 
+###deployment
+updated default network to ganache, using 127.0.0.1:7545.  must have ganache installed and running
+
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
 
