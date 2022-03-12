@@ -6,6 +6,9 @@ import {
 import {
   displayTOASTs,
 } from "./util/toastCalls";
+import {
+  getNftsAxios,
+} from "./util/toastAxios";
 
 const Display = (props) => {
   const [walletAddress, setWallet] = useState("");
@@ -62,6 +65,11 @@ const Display = (props) => {
     }
   };
 
+  const onAxiosPressed = async () => {
+    const result = await getNftsAxios(textboxWalletAddress);
+    
+  };
+
   return (
     <div className="Display">
       <button id="walletButton" onClick={connectWalletPressed}>
@@ -76,7 +84,28 @@ const Display = (props) => {
       </button>
 
       <br></br>
-      <h1 id="title">Display Your TOASTs</h1>
+      <h1 id="title">Get NFTs</h1>
+      <p>
+        Press 'Display TOASTs' to display your TOASTs"
+      </p>
+      <form>
+        <h2>✍️ Wallet Address: </h2>
+        <input
+          type="text"
+          placeholder="enter wallet address here"
+          onChange={(event) => setToastsWalletAddress(event.target.value)}
+        />
+      </form>
+      <button id="mintButton" onClick={onAxiosPressed}>
+        Display TOASTs
+      </button>
+      <p id="status" style={{ color: "red" }}>
+        {status}
+      </p>
+
+
+      <br></br>
+      <h1 id="title">This works with balanceOf fake call</h1>
       <p>
         Press 'Display TOASTs' to display your TOASTs"
       </p>
