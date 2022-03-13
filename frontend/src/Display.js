@@ -67,6 +67,7 @@ const Display = (props) => {
 
   const onAxiosPressed = async () => {
     const result = await getNftsAxios(textboxWalletAddress);
+    setStatus("read in values from axios call");
     
   };
 

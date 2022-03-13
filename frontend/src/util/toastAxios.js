@@ -3,6 +3,7 @@ const axios = require('axios');
 require('dotenv').config({ path: '../../.env' })
 
 const polygonMainnetURL = process.env.POLYGON_MAINNET_URL;
+//const polygonMainnetURL = "if process.env doesn't work, hardcode the alchemy url here";
 
 console.log("url i'm getting:", polygonMainnetURL);
 const baseURL = `${polygonMainnetURL}/getNFTs/`;
