@@ -1,11 +1,10 @@
 import './App.css';
-import Minter from './Minter'
+import Display from './Display'
 
 function App() {
   return (
     <div className="App">
-      <Minter></Minter>
-      
+      <Display></Display>
     </div>
   );
 }

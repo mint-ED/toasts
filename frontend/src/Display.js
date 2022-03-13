@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import {
   connectWallet,
   getCurrentWalletConnected,
-  mintNFT,
 } from "./util/interact.js";
+import {
+  displayTOASTs,
+} from "./util/toastCalls";
+import {
+  getNftsAxios,
+} from "./util/toastAxios";
 
-const Minter = (props) => {
+const Display = (props) => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setURL] = useState("");
+  //TODO: using only wallet address supplied in text field.  replace this with wallet address from connected wallet
+  const [textboxWalletAddress, setToastsWalletAddress] = useState("");
 
   useEffect(async () => {
     const { address, status } = await getCurrentWalletConnected();
@@ -53,18 +57,22 @@ const Minter = (props) => {
     setWallet(walletResponse.address);
   };
 
-  const onMintPressed = async () => {
-    const { success, status } = await mintNFT(url, name, description);
+  const onDisplayPressed = async () => {
+    const { success, status } = await displayTOASTs(textboxWalletAddress);
     setStatus(status);
     if (success) {
-      setName("");
-      setDescription("");
-      setURL("");
+      setToastsWalletAddress("");
     }
   };
 
+  const onAxiosPressed = async () => {
+    const result = await getNftsAxios(textboxWalletAddress);
+    setStatus("read in values from axios call");
+    
+  };
+
   return (
-    <div className="Minter">
+    <div className="Display">
       <button id="walletButton" onClick={connectWalletPressed}>
         {walletAddress.length > 0 ? (
           "Connected: " +
@@ -77,32 +85,41 @@ const Minter = (props) => {
       </button>
 
       <br></br>
-      <h1 id="title">🧙‍♂️ Alchemy NFT Minter</h1>
+      <h1 id="title">Get NFTs</h1>
       <p>
-        Simply add your asset's link, name, and description, then press "Mint."
+        Press 'Display TOASTs' to display your TOASTs"
       </p>
       <form>
-        <h2>🖼 Link to asset: </h2>
+        <h2>✍️ Wallet Address: </h2>
         <input
           type="text"
-          placeholder="e.g. https://gateway.pinata.cloud/ipfs/<hash>"
-          onChange={(event) => setURL(event.target.value)}
-        />
-        <h2>🤔 Name: </h2>
-        <input
-          type="text"
-          placeholder="e.g. My first NFT!"
-          onChange={(event) => setName(event.target.value)}
-        />
-        <h2>✍️ Description: </h2>
-        <input
-          type="text"
-          placeholder="e.g. Even cooler than cryptokitties ;)"
-          onChange={(event) => setDescription(event.target.value)}
+          placeholder="enter wallet address here"
+          onChange={(event) => setToastsWalletAddress(event.target.value)}
         />
       </form>
-      <button id="mintButton" onClick={onMintPressed}>
-        Mint NFT
+      <button id="mintButton" onClick={onAxiosPressed}>
+        Display TOASTs
+      </button>
+      <p id="status" style={{ color: "red" }}>
+        {status}
+      </p>
+
+
+      <br></br>
+      <h1 id="title">This works with balanceOf fake call</h1>
+      <p>
+        Press 'Display TOASTs' to display your TOASTs"
+      </p>
+      <form>
+        <h2>✍️ Wallet Address: </h2>
+        <input
+          type="text"
+          placeholder="enter wallet address here"
+          onChange={(event) => setToastsWalletAddress(event.target.value)}
+        />
+      </form>
+      <button id="mintButton" onClick={onDisplayPressed}>
+        Display TOASTs
       </button>
       <p id="status" style={{ color: "red" }}>
         {status}
@@ -111,4 +128,4 @@ const Minter = (props) => {
   );
 };
 
-export default Minter;
+export default Display;
