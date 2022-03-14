@@ -86,9 +86,21 @@ describe("TOAST contract", function () {
         
         expect(await toast.balanceOf(alice.address, tokenId)).to.equal(amount);
 
-        
-      
     });
+
+    it("Should verify many-to-single: sunny day", async function () {
+
+      let tokenIds = [0,1,2,3,4];
+      let amounts = [1,1,1,1,1];
+      let data = [];
+
+      const tx = await toast.toastManyToSingle(alice.address, tokenIds, amounts, data);
+      await tx.wait();
+      
+      expect(await toast.balanceOf(alice.address, tokenIds[0])).to.equal(amounts[0]);
+      expect(await toast.balanceOf(alice.address, tokenIds[1])).to.equal(amounts[1]);
+
+  });
   
   });
   
@@ -96,15 +108,26 @@ describe("TOAST contract", function () {
 
     let perfectAttendanceTokenId;
     let dailyAttendanceTokenIds; 
+    
 
     before(async function () {
         perfectAttendanceTokenId = 6;
         dailyAttendanceTokenIds = [1,2,3,4];
       });
 
-    it("Should verify initial token setup", async function () {
+    it("Should check token exchange qualification", async function () {
 
-        expect(perfectAttendanceTokenId, 6).to.be.equal;
+      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+      await tx.wait();
+
+      let burnable = await toast.getNewToBurnableMapping(perfectAttendanceTokenId);
+
+      expect(burnable[0]).to.equal(1);
+      expect(burnable[1]).to.equal(2);
+      expect(burnable[2]).to.equal(3);
+      expect(burnable[3]).to.equal(4);
+
+      
         
       
     });
