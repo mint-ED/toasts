@@ -1,5 +1,5 @@
 // We import Chai to use its asserting functions here.
-const { expect, Assertion, assert } = require("chai");
+const { expect, Assertion, assert, AssertionError } = require("chai");
 
 // `describe` is a Mocha function that allows you to organize your tests. It's
 // not actually needed, but having your tests organized makes debugging them
@@ -108,14 +108,21 @@ describe("TOAST contract", function () {
 
     let perfectAttendanceTokenId;
     let dailyAttendanceTokenIds; 
+    let aliceTokenIds;
+    let aliceAmounts;
+    let data = [];
     
 
     before(async function () {
         perfectAttendanceTokenId = 6;
         dailyAttendanceTokenIds = [1,2,3,4];
+        aliceTokenIds = [0,1,2,3,4];  //perfect attendance, plus orientation token
+        aliceAmounts = [1,1,1,1,1];
+        bobTokenIds = [0,1,3,4]; //missed day 2, so no perfect attendance
+        bobAmounts = [1,1,1,1];
       });
 
-    it("Should check token exchange qualification", async function () {
+    it("Should New-to-burnable token mapping setter/getter", async function () {
 
       const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
       await tx.wait();
@@ -124,12 +131,34 @@ describe("TOAST contract", function () {
 
       expect(burnable[0]).to.equal(1);
       expect(burnable[1]).to.equal(2);
-      expect(burnable[2]).to.equal(3);
-      expect(burnable[3]).to.equal(4);
+    });
 
-      
-        
-      
+    it("Should check a user's qualification for exchanging tokens: alice qualified", async function () {
+
+      //set new-burnable token mapping
+      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+      await tx.wait();
+
+      const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
+      await tx2.wait();
+
+      let aliceQuals = await toast.checkExchangeQualification(alice.address, perfectAttendanceTokenId);
+      assert.isTrue(aliceQuals);
+     
+    });
+
+    it("Should check a user's qualification for exchanging tokens: bob not qualified", async function () {
+
+      //set new-burnable token mapping
+      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+      await tx.wait();
+
+      const tx2 = await toast.toastManyToSingle(bob.address, bobTokenIds, bobAmounts, data);
+      await tx2.wait();
+
+      let bobQuals = await toast.checkExchangeQualification(bob.address, perfectAttendanceTokenId);
+      assert.isFalse(bobQuals);
+     
     });
   
   });
