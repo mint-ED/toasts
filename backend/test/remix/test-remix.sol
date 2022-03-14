@@ -9,8 +9,13 @@ contract ToastTest2 {
    
    
     TOASTS toast;
+    address ownerAddr;
+    address addr2;
+
     function beforeAll () public {
         toast = new TOASTS();
+        ownerAddr = TestsAccounts.getAccount(0);
+        addr2 = TestsAccounts.getAccount(1);
     }
     
     function checkContractNameAndSymbol () public {
@@ -21,6 +26,18 @@ contract ToastTest2 {
         toast.setNameAndSymbol(newName, newSymbol);
         Assert.equal(toast.name(), newName, "contract name should change with setter");
         Assert.equal(toast.symbol(), newSymbol, "contract name should change with setter");
+    }
+
+    function checkToastSingleToSingle () public {
+
+        uint256 tokenId = 0;
+        uint256 amount = 1;
+        bytes memory data;
+
+        toast.toastSingleToSingle(ownerAddr, tokenId, amount, data);
+
+        Assert.equal(toast.balanceOf(ownerAddr, tokenId), amount, "balanceOf account's tokenId should be amount");
+
     }
     
 
