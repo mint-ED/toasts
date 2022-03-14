@@ -80,6 +80,26 @@ contract ToastTest2 {
          //bob should not qualify bc he does not have the 4 required daily tokens  
         Assert.equal(bobQuals, false, "bob shouldn't qualify but did");
 
+        uint256[] memory aliceTokensToExchange = new uint256[](4);
+        aliceTokensToExchange[0] = 1;
+        aliceTokensToExchange[1] = 2;
+        aliceTokensToExchange[2] = 3;
+        aliceTokensToExchange[3] = 4;
+
+        uint256[] memory aliceTokenAmounts = new uint256[](4);
+        aliceTokenAmounts[0] = 1;
+        aliceTokenAmounts[1] = 1;
+        aliceTokenAmounts[2] = 1;
+        aliceTokenAmounts[3] = 1;
+
+        //toast.exchange(alice, perfectAttendanceTokenId, aliceTokensToExchange, aliceTokenAmounts, data);
+
+        //uint256 alicePerfectTokenCount = toast.balanceOf(alice, perfectAttendanceTokenId);
+        //Assert.equal(alicePerfectTokenCount, 1, "alice didn't get the perfect attendance token");
+
+
+         
+
         //give bob the last required token and check if he's qualified
         toast.toastSingleToSingle(bob, 4, 1, data);
         bobQuals = toast.checkExchangeQualification(bob, perfectAttendanceTokenId);
