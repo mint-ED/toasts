@@ -110,6 +110,12 @@ describe("TOAST contract", function () {
     let dailyAttendanceTokenIds; 
     let aliceTokenIds;
     let aliceAmounts;
+    let aliceTokensToExchange;
+    let aliceAmountsToExchange;
+    let bobTokenIds;
+    let bobAmounts;
+    let bobTokensToExchange;
+    let bobAmountsToExchange;
     let data = [];
     
 
@@ -118,11 +124,16 @@ describe("TOAST contract", function () {
         dailyAttendanceTokenIds = [1,2,3,4];
         aliceTokenIds = [0,1,2,3,4];  //perfect attendance, plus orientation token
         aliceAmounts = [1,1,1,1,1];
+        aliceTokensToExchangeGood = [1,2,3,4];
+        aliceAmountsToExchangeGood = [1,1,1,1];
+        aliceTokensToExchangeWrong = [0,2,3,4];
+        aliceAmountsToExchangeWrong = [1,1,1,1];
         bobTokenIds = [0,1,3,4]; //missed day 2, so no perfect attendance
         bobAmounts = [1,1,1,1];
+        
       });
 
-    it("Should New-to-burnable token mapping setter/getter", async function () {
+    it("Should validate new-to-burnable token mapping setter/getter", async function () {
 
       const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
       await tx.wait();
@@ -144,7 +155,6 @@ describe("TOAST contract", function () {
 
       let aliceQuals = await toast.checkExchangeQualification(alice.address, perfectAttendanceTokenId);
       assert.isTrue(aliceQuals);
-     
     });
 
     it("Should check a user's qualification for exchanging tokens: bob not qualified", async function () {
@@ -158,7 +168,30 @@ describe("TOAST contract", function () {
 
       let bobQuals = await toast.checkExchangeQualification(bob.address, perfectAttendanceTokenId);
       assert.isFalse(bobQuals);
+    });
+
+    it("Should exchange burnable for new token: alice qualified", async function () {
+
+
+      //set new-burnable token mapping
+      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+      await tx.wait();
+
+      const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
+      await tx2.wait();
+
+      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeGood, aliceAmountsToExchangeGood, data);
+      await tx3.wait();
      
+      expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(1);
+
+      for(i=0; i<aliceAmountsToExchangeGood.length; i++){
+        expect(await toast.balanceOf(alice.address, aliceTokensToExchangeGood[i])).to.equal(0);
+      }
+
+
+      
+  
     });
   
   });
