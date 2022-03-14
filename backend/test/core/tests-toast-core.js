@@ -110,26 +110,32 @@ describe("TOAST contract", function () {
     let dailyAttendanceTokenIds; 
     let aliceTokenIds;
     let aliceAmounts;
-    let aliceTokensToExchange;
-    let aliceAmountsToExchange;
+    let aliceTokensToExchangeGood;
+    let aliceTokensToExchangeTooFew;
+    let amountsToExchange3;
     let bobTokenIds;
     let bobAmounts;
     let bobTokensToExchange;
-    let bobAmountsToExchange;
+    let amountsToExchange4;
     let data = [];
+    
     
 
     before(async function () {
-        perfectAttendanceTokenId = 6;
-        dailyAttendanceTokenIds = [1,2,3,4];
-        aliceTokenIds = [0,1,2,3,4];  //perfect attendance, plus orientation token
-        aliceAmounts = [1,1,1,1,1];
-        aliceTokensToExchangeGood = [1,2,3,4];
-        aliceAmountsToExchangeGood = [1,1,1,1];
-        aliceTokensToExchangeWrong = [0,2,3,4];
-        aliceAmountsToExchangeWrong = [1,1,1,1];
-        bobTokenIds = [0,1,3,4]; //missed day 2, so no perfect attendance
-        bobAmounts = [1,1,1,1];
+        perfectAttendanceTokenId    = 6;
+        dailyAttendanceTokenIds     = [1,2,3,4];    
+
+        aliceTokenIds               = [0,1,2,3,4];  //perfect attendance, plus orientation token
+        aliceAmounts                = [1,1,1,1,1];
+        aliceTokensToExchangeGood   = [1,2,3,4];
+        aliceTokensToExchangeWrong  = [0,2,3,4];
+        aliceTokensToExchangeTooFew = [1,2,3];
+
+        amountsToExchange3          = [1,1,1];
+        amountsToExchange4          = [1,1,1,1];
+
+        bobTokenIds                 = [0,1,3,4]; //missed day 2, so no perfect attendance
+        bobAmounts                  = [1,1,1,1];
         
       });
 
@@ -177,21 +183,46 @@ describe("TOAST contract", function () {
       const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
       await tx.wait();
 
+      //give alice the tokens she needs to exchange
       const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
       await tx2.wait();
 
-      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeGood, aliceAmountsToExchangeGood, data);
+      //exchange bad tokens for good token
+      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeGood, amountsToExchange4, data);
       await tx3.wait();
      
+      //new token was minted
       expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(1);
 
-      for(i=0; i<aliceAmountsToExchangeGood.length; i++){
+      //old tokens were burned
+      for(i=0; i<aliceTokensToExchangeGood.length; i++){
         expect(await toast.balanceOf(alice.address, aliceTokensToExchangeGood[i])).to.equal(0);
-      }
+      }  
+    });
 
+    it("Should not exchange burnable for new token: alice qualifies but sent wrong tokens to exchange", async function () {
 
-      
-  
+      //set new-burnable token mapping
+      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+      await tx.wait();
+
+      //give alice the tokens she needs to exchange
+      const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
+      await tx2.wait();
+
+      //exchange bad tokens for good token
+      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeWrong, amountsToExchange4, data);
+      await tx3.wait();
+
+     
+     
+      //new token should not mint bc the tokens passed in were incorrect
+      expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(0);
+
+      // //old tokens were burned
+      // for(i=0; i<aliceTokensToExchangeWrong.length; i++){
+      //   expect(await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i])).to.be.above(0);
+      // } 
     });
   
   });
