@@ -1,5 +1,8 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
+
+//var chai = require('chai');
+
 //require('@openzeppelin/hardhat-upgrades');
 require('dotenv').config()
 
