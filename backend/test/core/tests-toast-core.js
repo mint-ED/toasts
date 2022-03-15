@@ -1,22 +1,7 @@
-// We import Chai to use its asserting functions here.
 const { expect, Assertion, assert, AssertionError } = require("chai");
+const { BigNumber } = require('ethers');
 
-// `describe` is a Mocha function that allows you to organize your tests. It's
-// not actually needed, but having your tests organized makes debugging them
-// easier. All Mocha functions are available in the global scope.
-
-// `describe` receives the name of a section of your test suite, and a callback.
-// The callback must define the tests of that section. This callback can't be
-// an async function.
 describe("TOAST contract", function () {
-  // Mocha has four functions that let you hook into the the test runner's
-  // lifecyle. These are: `before`, `beforeEach`, `after`, `afterEach`.
-
-  // They're very useful to setup the environment for tests, and to clean it
-  // up after they run.
-
-  // A common pattern is to declare some variables, and assign them in the
-  // `before` and `beforeEach` callbacks.
 
   let ToastContract;
   let toast;
@@ -25,8 +10,6 @@ describe("TOAST contract", function () {
   let bob;
   let addrs;
   
-
-
   beforeEach(async function () {
     ToastContract = await ethers.getContractFactory("contracts/TOAST.sol:TOASTS");
     [owner, alice, bob, ...addrs] = await ethers.getSigners();
@@ -121,7 +104,7 @@ describe("TOAST contract", function () {
     
     
 
-    before(async function () {
+    beforeEach(async function () {
         perfectAttendanceTokenId    = 6;
         dailyAttendanceTokenIds     = [1,2,3,4];    
 
@@ -136,13 +119,15 @@ describe("TOAST contract", function () {
 
         bobTokenIds                 = [0,1,3,4]; //missed day 2, so no perfect attendance
         bobAmounts                  = [1,1,1,1];
+
+        const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
+        await tx.wait();
+
+        
         
       });
 
     it("Should validate new-to-burnable token mapping setter/getter", async function () {
-
-      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
-      await tx.wait();
 
       let burnable = await toast.getNewToBurnableMapping(perfectAttendanceTokenId);
 
@@ -151,10 +136,6 @@ describe("TOAST contract", function () {
     });
 
     it("Should check a user's qualification for exchanging tokens: alice qualified", async function () {
-
-      //set new-burnable token mapping
-      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
-      await tx.wait();
 
       const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
       await tx2.wait();
@@ -165,10 +146,6 @@ describe("TOAST contract", function () {
 
     it("Should check a user's qualification for exchanging tokens: bob not qualified", async function () {
 
-      //set new-burnable token mapping
-      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
-      await tx.wait();
-
       const tx2 = await toast.toastManyToSingle(bob.address, bobTokenIds, bobAmounts, data);
       await tx2.wait();
 
@@ -178,18 +155,16 @@ describe("TOAST contract", function () {
 
     it("Should exchange burnable for new token: alice qualified", async function () {
 
-
-      //set new-burnable token mapping
-      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
-      await tx.wait();
-
       //give alice the tokens she needs to exchange
       const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
       await tx2.wait();
 
       //exchange bad tokens for good token
-      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeGood, amountsToExchange4, data);
-      await tx3.wait();
+      let exchangedTx = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeGood, amountsToExchange4, data);
+      await exchangedTx.wait();
+
+      //exchange function returns true
+      //assert.isTrue(exchangedTx);
      
       //new token was minted
       expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(1);
@@ -198,28 +173,39 @@ describe("TOAST contract", function () {
       for(i=0; i<aliceTokensToExchangeGood.length; i++){
         expect(await toast.balanceOf(alice.address, aliceTokensToExchangeGood[i])).to.equal(0);
       }  
+
     });
 
     it("Should not exchange burnable for new token: alice qualifies but sent wrong tokens to exchange", async function () {
+      
+      let minted = await toast.balanceOf(alice.address, perfectAttendanceTokenId);
+      console.log("alice's perfect attendance token starting count: ", minted);
 
-      //set new-burnable token mapping
-      const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
-      await tx.wait();
 
       //give alice the tokens she needs to exchange
       const tx2 = await toast.toastManyToSingle(alice.address, aliceTokenIds, aliceAmounts, data);
       await tx2.wait();
 
+      console.log("alice's tokens: ", aliceTokenIds);
+      console.log("alice's tokens she's trying to exchange: ", aliceTokensToExchangeWrong);
+
+
       //exchange bad tokens for good token
-      const tx3 = await toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeWrong, amountsToExchange4, data);
-      await tx3.wait();
+      await expect(toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeWrong, amountsToExchange4, data))
+        .to.be.revertedWith('user qualifies for new token, but correct tokens were not passed in');
+        
+      //await tx3.wait();
 
-     
-     
+      // await expect(contractInstance.myFunction(BigNumber.from('6')))
+      //   .to.be.revertedWith('Num should be bigger than 5');
+
+           
       //new token should not mint bc the tokens passed in were incorrect
-      expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(0);
+      //minted = await toast.balanceOf(alice.address, perfectAttendanceTokenId);
+      //console.log("alice's perfect attendance token count post-exchange call: ", minted);
+      //expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(0);
 
-      // //old tokens were burned
+      //old tokens were burned
       // for(i=0; i<aliceTokensToExchangeWrong.length; i++){
       //   expect(await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i])).to.be.above(0);
       // } 

@@ -1295,7 +1295,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         NewToBurnable[tokenId_] = burnable_ ; 
     }
 
-    function getNewToBurnableMapping(uint256 tokenId_)  external view returns(uint256[] memory) {
+    function getNewToBurnableMapping(uint256 tokenId_)  public view returns(uint256[] memory) {
         return NewToBurnable[tokenId_]; 
     }
 
@@ -1303,10 +1303,10 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
 
         bool qualified = false;
 
-        uint256[] memory tokensRequired_ = NewToBurnable[tokenIdNew_];
+        uint256[] memory tokensRequired = NewToBurnable[tokenIdNew_];
 
-        for (uint256 i = 0; i < tokensRequired_.length; i++) {
-            if(!(IERC1155(this).balanceOf(account_,tokensRequired_[i]) > 0)){
+        for (uint256 i = 0; i < tokensRequired.length; i++) {
+            if(!(IERC1155(this).balanceOf(account_,tokensRequired[i]) > 0)){
                 qualified = false;
                 break;
             }
@@ -1319,21 +1319,28 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     }
 
     //exchange array of tokens for new token
-    function exchange(address account_, uint256 newTokenId_, uint256[] memory currentTokens, uint256[] memory currentTokenCounts, bytes memory data_) public virtual {
+    function exchange(address account_, uint256 tokenIdNew_, uint256[] memory currentTokens, uint256[] memory currentTokenCounts, bytes memory data_) public virtual {
         require(!paused, "the contract is paused");
-        require(account_ == _msgSender() || isApprovedForAll(account_, _msgSender()),
-            "ERC1155: caller is not owner nor approved");
+        require(account_ == _msgSender() || isApprovedForAll(account_, _msgSender()),"caller is not owner nor approved");
 
         //TODO: add require statements to check token counts arent zero, etc.
 
         //require the account qualies for new token based on balanceOf, not existing tokens passed in
-        require(checkExchangeQualification(account_, newTokenId_), "account does not qualify for new token");
+        require(checkExchangeQualification(account_, tokenIdNew_), "account does not qualify for new token");
 
-        //TODO:  wrap burn and mint into same try/catch
-        _mint(account_, newTokenId_, 1, data_);
-        _burnBatch(account_, currentTokens, currentTokenCounts);
+        //require that the tokens passed in are the correct tokens to exchange based on the mapping
+        //TODO: refactoring opportunity
 
+        uint256[] memory tokensRequired = NewToBurnable[tokenIdNew_];
         
+        for (uint256 i = 0; i < tokensRequired.length; i++) {
+            if(!(currentTokens[i] == tokensRequired[i])){
+                revert("user qualifies for new token, but correct tokens were not passed in");
+            }
+        }
+
+        _mint(account_, tokenIdNew_, 1, data_);
+        _burnBatch(account_, currentTokens, currentTokenCounts);
     }
    //-------------------------------------------------------
 
