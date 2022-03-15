@@ -219,7 +219,7 @@ describe("TOAST contract", function () {
        for(i=0; i<aliceTokensToExchangeWrong.length; i++){
          expect(await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i])).to.be.above(0);
          existingTokenCount = await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i]);
-         console.log("balance of alice's existing tokenId ", i, " is ", existingTokenCount)
+         console.log("balance of alice's existing tokenId ", i, " is ", existingTokenCount);
        } 
     });
   
