@@ -94,8 +94,6 @@ describe("TOAST contract", function () {
     let aliceTokenIds;
     let aliceAmounts;
     let aliceTokensToExchangeGood;
-    let aliceTokensToExchangeTooFew;
-    let amountsToExchange3;
     let bobTokenIds;
     let bobAmounts;
     let bobTokensToExchange;
@@ -119,6 +117,7 @@ describe("TOAST contract", function () {
 
         bobTokenIds                 = [0,1,3,4]; //missed day 2, so no perfect attendance
         bobAmounts                  = [1,1,1,1];
+        bobTokensToExchange         = [0,1,3,4];
 
         const tx = await toast.setNewToBurnableMapping(perfectAttendanceTokenId, dailyAttendanceTokenIds);
         await tx.wait();
@@ -174,6 +173,21 @@ describe("TOAST contract", function () {
         expect(await toast.balanceOf(alice.address, aliceTokensToExchangeGood[i])).to.equal(0);
       }  
 
+    });
+
+    it("Should not exchange burnable for new token: bob isn't qualified", async function () {
+
+      console.log("bob's address: ", bob.address);
+      console.log("bob's tokens ", bobTokenIds);
+      console.log("perfect attendance token ", perfectAttendanceTokenId);
+      console.log("bob tokens to exchange ", bobTokenIds);
+      
+      // //give bob the tokens she needs to exchange
+      const tx2 = await toast.toastManyToSingle(bob.address, bobTokenIds, bobAmounts, data);
+      await tx2.wait();
+
+      await expect(toast.connect(bob).exchange(bob.address, perfectAttendanceTokenId, bobTokensToExchange, amountsToExchange4, data))
+        .to.be.revertedWith('account does not qualify for new token');
     });
 
     it("Should not exchange burnable for new token: alice qualifies but sent wrong tokens to exchange", async function () {
