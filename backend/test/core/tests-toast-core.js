@@ -194,21 +194,19 @@ describe("TOAST contract", function () {
       await expect(toast.connect(alice).exchange(alice.address, perfectAttendanceTokenId, aliceTokensToExchangeWrong, amountsToExchange4, data))
         .to.be.revertedWith('user qualifies for new token, but correct tokens were not passed in');
         
-      //await tx3.wait();
-
-      // await expect(contractInstance.myFunction(BigNumber.from('6')))
-      //   .to.be.revertedWith('Num should be bigger than 5');
-
            
       //new token should not mint bc the tokens passed in were incorrect
-      //minted = await toast.balanceOf(alice.address, perfectAttendanceTokenId);
-      //console.log("alice's perfect attendance token count post-exchange call: ", minted);
+      minted = await toast.balanceOf(alice.address, perfectAttendanceTokenId);
+      console.log("alice's perfect attendance token count post-exchange call: ", minted);
       //expect(await toast.balanceOf(alice.address, perfectAttendanceTokenId)).to.equal(0);
 
       //old tokens were burned
-      // for(i=0; i<aliceTokensToExchangeWrong.length; i++){
-      //   expect(await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i])).to.be.above(0);
-      // } 
+      let existingTokenCount;
+       for(i=0; i<aliceTokensToExchangeWrong.length; i++){
+         expect(await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i])).to.be.above(0);
+         existingTokenCount = await toast.balanceOf(alice.address, aliceTokensToExchangeWrong[i]);
+         console.log("balance of alice's existing tokenId ", i, " is ", existingTokenCount)
+       } 
     });
   
   });
