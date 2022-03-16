@@ -27,6 +27,19 @@ describe("TOAST contract", function () {
     });
   });
 
+  describe("Access Control", function () {
+    it("Should add alice to the admin list (to later be replaced with AccessControl.sol functionality)", async function () {
+    
+      let adminList = [alice.address];
+      const tx = await toast.createAdminList(adminList);
+      await tx.wait();
+  
+      assert.isTrue(await toast.isAdmin(alice.address));
+      assert.isFalse(await toast.isAdmin(bob.address));
+
+    });
+  });
+
   describe("Basic Contract Functionality", function () {
     it("Should check initial deploy name/symbol are the default and can be updated", async function () {
   
