@@ -12,44 +12,22 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
-
-// abstract contract Ownable {
-//     address public owner;
-//     event OwnershipTransferred(address indexed oldOwner_, address indexed newOwner_);
-//     constructor() { owner = msg.sender; }
-//     modifier onlyOwner {
-//         require(owner == msg.sender, "Ownable: caller is not the owner");
-//         _;
-//     }
-//     function _transferOwnership(address newOwner_) internal virtual {
-//         address _oldOwner = owner;
-//         owner = newOwner_;
-//         emit OwnershipTransferred(_oldOwner, newOwner_);    
-//     }
-//     function transferOwnership(address newOwner_) public virtual onlyOwner {
-//         require(newOwner_ != address(0x0), "Ownable: new owner is the zero address!");
-//         _transferOwnership(newOwner_);
-//     }
-//     function renounceOwnership() public virtual onlyOwner {
-//         _transferOwnership(address(0x0));
-//     }
-// }
-
-//**************************************************************
-// MintED Tokens of Appreciation (TOASTs) ERC1155 Contract 
-//**************************************************************
-
-
 contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
 
     //define roles
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant ADMIN_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    
     constructor() ERC1155("") {
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(MINTER_ROLE, ADMIN_ROLE);
+
         _setupRole(ADMIN_ROLE, msg.sender);
         _setupRole(MINTER_ROLE, msg.sender);
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
+
+
 
     //Manage Pausing
     bool public paused = false;
@@ -94,6 +72,12 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
         }
         return false;
     }
+
+    //access based on openzeppelin AccessControl.sol
+    function assignRole(bytes32 role, address account) public{
+        grantRole(role, account);
+    }
+
     //-------------------------------------------------------
 
     //Manage Max Supply of each Token (set to 1 for unique NFT, > 1 for unset for semi-fungible)
@@ -347,7 +331,7 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
         override(ERC1155, AccessControl)
         returns (bool)
     {
-        return interfaceId == type(IERC1155).interfaceId || super.supportsInterface(interfaceId);
+        return super.supportsInterface(interfaceId);
     }
 
     

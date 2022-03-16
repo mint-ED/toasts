@@ -36,7 +36,17 @@ describe("TOAST contract", function () {
   
       assert.isTrue(await toast.isAdmin(alice.address));
       assert.isFalse(await toast.isAdmin(bob.address));
+    });
 
+    it("Should grant alice a Minter role", async function () {
+    
+      let adminList = [alice.address];
+      let role = toast.MINTER_ROLE;
+      console.log("MINTER_ROLE: ", role);
+      //const tx = await toast.assignRole(role, alice.address);
+      //await tx.wait();
+  
+  
     });
   });
 
