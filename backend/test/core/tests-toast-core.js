@@ -17,8 +17,36 @@ describe("TOAST contract", function () {
   });
 
   describe("Basic Contract Connectivity", function () {
+   
+    let isAdmin;
+
     it("Should configure accounts correctly", async function () {
-      expect(await toast.owner()).to.equal(owner.address);
+      //isAdmin = await toast.hasRole(ADMIN_ROLE, owner);
+      //assert.isTrue(isAdmin);      
+      //expect(await toast.).to.equal(owner.address);
+    });
+  });
+
+  describe("Access Control", function () {
+    it("Should add alice to the admin list (to later be replaced with AccessControl.sol functionality)", async function () {
+    
+      let adminList = [alice.address];
+      const tx = await toast.createAdminList(adminList);
+      await tx.wait();
+  
+      assert.isTrue(await toast.isAdmin(alice.address));
+      assert.isFalse(await toast.isAdmin(bob.address));
+    });
+
+    it("Should grant alice a Minter role", async function () {
+    
+      let adminList = [alice.address];
+      let role = toast.MINTER_ROLE;
+      console.log("MINTER_ROLE: ", role);
+      //const tx = await toast.assignRole(role, alice.address);
+      //await tx.wait();
+  
+  
     });
   });
 
