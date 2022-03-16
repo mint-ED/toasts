@@ -17,8 +17,13 @@ describe("TOAST contract", function () {
   });
 
   describe("Basic Contract Connectivity", function () {
+   
+    let isAdmin;
+
     it("Should configure accounts correctly", async function () {
-      expect(await toast.owner()).to.equal(owner.address);
+      //isAdmin = await toast.hasRole(ADMIN_ROLE, owner);
+      //assert.isTrue(isAdmin);      
+      //expect(await toast.).to.equal(owner.address);
     });
   });
 

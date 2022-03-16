@@ -8,45 +8,53 @@
 pragma solidity ^0.8.0;
 
 //OPENZEPPELIN IMPORTS
-//import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
 
-abstract contract Ownable {
-    address public owner;
-    event OwnershipTransferred(address indexed oldOwner_, address indexed newOwner_);
-    constructor() { owner = msg.sender; }
-    modifier onlyOwner {
-        require(owner == msg.sender, "Ownable: caller is not the owner");
-        _;
-    }
-    function _transferOwnership(address newOwner_) internal virtual {
-        address _oldOwner = owner;
-        owner = newOwner_;
-        emit OwnershipTransferred(_oldOwner, newOwner_);    
-    }
-    function transferOwnership(address newOwner_) public virtual onlyOwner {
-        require(newOwner_ != address(0x0), "Ownable: new owner is the zero address!");
-        _transferOwnership(newOwner_);
-    }
-    function renounceOwnership() public virtual onlyOwner {
-        _transferOwnership(address(0x0));
-    }
-}
+// abstract contract Ownable {
+//     address public owner;
+//     event OwnershipTransferred(address indexed oldOwner_, address indexed newOwner_);
+//     constructor() { owner = msg.sender; }
+//     modifier onlyOwner {
+//         require(owner == msg.sender, "Ownable: caller is not the owner");
+//         _;
+//     }
+//     function _transferOwnership(address newOwner_) internal virtual {
+//         address _oldOwner = owner;
+//         owner = newOwner_;
+//         emit OwnershipTransferred(_oldOwner, newOwner_);    
+//     }
+//     function transferOwnership(address newOwner_) public virtual onlyOwner {
+//         require(newOwner_ != address(0x0), "Ownable: new owner is the zero address!");
+//         _transferOwnership(newOwner_);
+//     }
+//     function renounceOwnership() public virtual onlyOwner {
+//         _transferOwnership(address(0x0));
+//     }
+// }
 
 //**************************************************************
 // MintED Tokens of Appreciation (TOASTs) ERC1155 Contract 
 //**************************************************************
 
 
-contract TOASTS is ERC1155, ERC1155Supply, Ownable {
-    constructor() ERC1155("") {}
+contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
+
+    //define roles
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    constructor() ERC1155("") {
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(ADMIN_ROLE, msg.sender);
+        _setupRole(MINTER_ROLE, msg.sender);
+    }
 
     //Manage Pausing
     bool public paused = false;
 
-    function togglePause() external onlyOwner {
+    function togglePause() external onlyRole(ADMIN_ROLE) {
         paused = !paused;
   }
     //-------------------------------------------------------
@@ -55,7 +63,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     mapping(uint256 => uint256) private tokenIdtoCost;
 
 
-    function setTokenCost(uint256 tokenId_, uint256 cost_) external onlyOwner {
+    function setTokenCost(uint256 tokenId_, uint256 cost_) external onlyRole(ADMIN_ROLE) {
         tokenIdtoCost[tokenId_] = cost_;
   }
 
@@ -69,11 +77,11 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     bool public onlyAdmins = true;  
     address payable [] public adminAddresses;  
 
-    function toggleOnlyAdmins() external onlyOwner {
+    function toggleOnlyAdmins() external onlyRole(ADMIN_ROLE) {
         onlyAdmins = !onlyAdmins;
   }
 
-    function createAdminList(address payable[] calldata _users) external onlyOwner {
+    function createAdminList(address payable[] calldata _users) external onlyRole(ADMIN_ROLE) {
         delete adminAddresses;
         adminAddresses = _users;
   }
@@ -91,7 +99,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     //Manage Max Supply of each Token (set to 1 for unique NFT, > 1 for unset for semi-fungible)
     mapping(uint256 => uint256) private tokenIdtoTokenMaxSupply;
 
-    function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyOwner {
+    function setTokenMaxSupply(uint256 tokenId_, uint256 maxSupply_) external onlyRole(ADMIN_ROLE) {
         require(maxSupply_ >= totalSupply(tokenId_), "max supply must be greater than current supply");
         
         tokenIdtoTokenMaxSupply[tokenId_] = maxSupply_; }
@@ -118,7 +126,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     // Manage Name & Symbol
     string public name = "mintED Toasts";
     string public symbol = "TOASTS";
-    function setNameAndSymbol(string memory name_, string memory symbol_) external onlyOwner 
+    function setNameAndSymbol(string memory name_, string memory symbol_) external onlyRole(ADMIN_ROLE) 
         { 
             name = name_; 
             symbol = symbol_;
@@ -132,20 +140,20 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     mapping(uint256 => string) internal tokenIdToTokenURI;
 
     //dynamic token address: option 1
-    function setBaseTokenURI(string memory uri_, string memory ext_) external onlyOwner {
+    function setBaseTokenURI(string memory uri_, string memory ext_) external onlyRole(ADMIN_ROLE) {
         baseTokenURI = uri_; baseTokenURI_EXT = ext_; }
 
     //universal base address: option 2
-    function setUniversalBaseTokenURI(string memory uri_) external onlyOwner {
+    function setUniversalBaseTokenURI(string memory uri_) external onlyRole(ADMIN_ROLE) {
         universalBaseTokenURI = uri_; }
     
     //harded-coded token adress: option 3
-    function setTokenIdToTokenURI(uint256 tokenId_, string memory uri_) external onlyOwner {
+    function setTokenIdToTokenURI(uint256 tokenId_, string memory uri_) external onlyRole(ADMIN_ROLE) {
         tokenIdToTokenURI[tokenId_] = uri_; }
 
     //default to dynamic uri with assumption that all (initial) tokens will reside at the same ipfs CID
     uint256 public tokenURIOption = 1;
-    function setTokenURIOption(uint256 option_) external onlyOwner { tokenURIOption = option_; }
+    function setTokenURIOption(uint256 option_) external onlyRole(ADMIN_ROLE) { tokenURIOption = option_; }
     
     function uri(uint256 tokenId_) public view override returns (string memory) {
         // Options System for Future Compatibility
@@ -167,10 +175,10 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
             require(supply + amount_ <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
         }
 
-        if (msg.sender != owner) {
-            if(onlyAdmins == true) {
-                require(isAdmin(msg.sender), "user is not an admin");
-            }
+
+        if(onlyAdmins == true) {
+            require(hasRole(ADMIN_ROLE, msg.sender));
+            //require(isAdmin(msg.sender), "user is not an admin");
         }
         
         _mint(to_, id_, amount_, data_);
@@ -187,11 +195,11 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
             }
         }
 
-        if (msg.sender != owner) {
-            if(onlyAdmins == true) {
-                require(isAdmin(msg.sender), "user is not an admin");
-            }
+        if(onlyAdmins == true) {
+            require(hasRole(ADMIN_ROLE, msg.sender));
+            //require(isAdmin(msg.sender), "user is not an admin");
         }
+
 
         //mint
         _mintBatch(to_, ids_, amounts_, data_);
@@ -206,10 +214,10 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
             require(supply + (amount_ * tos_.length) <= tokenIdtoTokenMaxSupply[id_], "max NFT limit exceeded");
         }
 
-        if (msg.sender != owner) {
-            if(onlyAdmins == true) {
-                require(isAdmin(msg.sender), "user is not an admin");
-            }
+
+        if(onlyAdmins == true) {
+            require(hasRole(ADMIN_ROLE, msg.sender));
+            //require(isAdmin(msg.sender), "user is not an admin");
         }
         
         //mint
@@ -230,10 +238,10 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
             }
         }
 
-        if (msg.sender != owner) {
-            if(onlyAdmins == true) {
-                require(isAdmin(msg.sender), "user is not an admin");
-            }
+
+        if(onlyAdmins == true) {
+            require(hasRole(ADMIN_ROLE, msg.sender));
+            //require(isAdmin(msg.sender), "user is not an admin");
         }
 
         //mint
@@ -248,7 +256,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
 
     mapping(uint256 => uint256[]) internal NewToBurnable;
 
-    function setNewToBurnableMapping(uint256 tokenId_, uint256[] calldata burnable_) external onlyOwner {
+    function setNewToBurnableMapping(uint256 tokenId_, uint256[] calldata burnable_) external onlyRole(ADMIN_ROLE) {
         //add require statements
         
         NewToBurnable[tokenId_] = burnable_ ; 
@@ -317,7 +325,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
         _burnBatch(account, ids, values);
     }
 
-    function withdraw() public payable onlyOwner {
+    function withdraw() public payable onlyRole(ADMIN_ROLE) {
         payable(msg.sender).transfer(address(this).balance);
     }
 
@@ -336,7 +344,7 @@ contract TOASTS is ERC1155, ERC1155Supply, Ownable {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC1155)
+        override(ERC1155, AccessControl)
         returns (bool)
     {
         return interfaceId == type(IERC1155).interfaceId || super.supportsInterface(interfaceId);
