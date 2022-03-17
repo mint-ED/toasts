@@ -1,8 +1,7 @@
-// Go to www.alchemy.com and create an account to grab your own api key!
-const apiKey = "demo";
-//const endpoint = `https://eth-mainnet.alchemyapi.io/v2/${apiKey}`;
-const endpoint = `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`;
+//requires the creation of a .env.local file at root
+const endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI;
 
+console.log("url: ", endpoint);
 
 const getAddressNFTs = async (owner, contractAddress, retryAttempt) => {
     if (retryAttempt === 5) {
