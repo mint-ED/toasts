@@ -3,7 +3,7 @@ import {
   connectWallet,
   getCurrentWalletConnected
 } from "../utils/wallet-connect";
-import {fetchNFTs} from '../utils/fetchNFTs';
+//import {fetchNFTs} from '../utils/fetchNFTs';
 
 const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5";  //toasts polygon address
 

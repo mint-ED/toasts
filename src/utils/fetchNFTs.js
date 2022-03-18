@@ -1,11 +1,23 @@
+//import configData from "../configs/config.json";
+
 console.log("Environment: ", process.env.NODE_ENV)
 
+let endpoint = "";
+
 //requires the creation of a .env.local file at root
-const endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI;
+if(process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI != null){
+    endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI;
+}
+else{
+    endpoint = "https://eth-mainnet.alchemyapi.io/v2/demo";
+}
 
 console.log("url: ", endpoint);
 
 const getAddressNFTs = async (owner, contractAddress, retryAttempt) => {
+    console.log("Wallet Address: ", owner);
+    console.log("Contract Address: ", contractAddress);
+
     if (retryAttempt === 5) {
         return;
     }
