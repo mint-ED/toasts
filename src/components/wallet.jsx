@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import {
   connectWallet,
   getCurrentWalletConnected
-} from "../utils/interact.js";
+} from "../utils/wallet-connect";
+import {fetchNFTs} from '../utils/fetchNFTs';
+
+const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5";  //toasts polygon address
 
 const Wallet = (props) => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
+  const [NFTs, setNFTs] = useState("")
 
   console.log("Wallet Address: ", walletAddress);
 
@@ -53,8 +57,8 @@ const Wallet = (props) => {
   
   
   return (
-    <div className="wallet">
-      <button id="walletButton" onClick={connectWalletPressed}>
+    <div className='w-2/6 flex justify-center' >
+      <button id="walletButton py-3 bg-white rounded-sm w-full hover:bg-slate-100" onClick={connectWalletPressed} >
         {walletAddress.length > 0 ? (
           "Connected: " +
           String(walletAddress)

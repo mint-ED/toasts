@@ -23,11 +23,11 @@ const Viewer = () => {
                         <p>Display your Toasts by connecting your wallet </p>
                     </div>
 
-                    <section className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2'>
-                        {                        
+                    <div className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2' >
+                        {                    
                             <Wallet></Wallet>       
                         }
-                    </section>
+                    </div>
 
                     <div className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2 '>
                         <input className="border rounded-sm focus:outline-none py-2 px-3 w-full" value={walletAddress} onChange={(e) => setOwner(e.target.value)} placeholder='Insert your wallet address'></input>
