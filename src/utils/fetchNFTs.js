@@ -1,3 +1,5 @@
+console.log("Environment: ", process.env.NODE_ENV)
+
 //requires the creation of a .env.local file at root
 const endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI;
 
