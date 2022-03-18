@@ -1,4 +1,5 @@
-<!-- PROJECT LOGO -->
+
+## mintED Toasts Frontend POC
 <br />
 <div align="center">
 
@@ -7,14 +8,8 @@
   <p align="center">
     Find, verify, and display any NFT with ease.
     <br />
-     <a href="https://www.youtube.com/watch?v=YehktV6LSqw"><strong>Full YouTube Tutorial »</strong></a>
+     <a href="https://github.com/alchemyplatform/Build-Your-NFT-Explorer/">Alchemy NFT API repo »</a>
     <br />
-    <br />
-     <a href="https://docs.alchemy.com/alchemy/enhanced-apis/nft-api">Explore the docs</a>
-    ·
-    <a href="https://github.com/alchemyplatform/Build-Your-NFT-Explorer/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/alchemyplatform/Build-Your-NFT-Explorer/issues">Request Feature</a>
   </p>
 
 </div>

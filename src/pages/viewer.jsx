@@ -23,7 +23,7 @@ const Viewer = () => {
                         <p>Display your Toasts by connecting your wallet </p>
                     </div>
 
-                    <div className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2' >
+                    <div className='flex flex-col text-slate-200 font-bold items-center justify-center mb-4 w-2/6 gap-y-2' >
                         {                    
                             <Wallet></Wallet>       
                         }

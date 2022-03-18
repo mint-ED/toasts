@@ -1,6 +1,6 @@
 const NftCard = ({ image, id, title, address, description, attributes }) => {
     return (
-        <div className="w-1/4 mr-3 mb-4 bg-slate-100 rounded-md" >
+        <div className="w-1/4 mr-3 mb-4 bg-slate-400 rounded-md" >
             <img className='w-full rounded-t-md' key={id} src={image}></img>
             <div className="p-3">
                 <div className="flex mb-3">
