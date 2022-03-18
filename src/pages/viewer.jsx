@@ -3,16 +3,12 @@ import NftCard from '../components/nftcard';
 import Wallet from '../components/wallet';
 import {fetchNFTs} from '../utils/fetchNFTs';
 
+
 const Viewer = () => {
 
-    const walletAddress = "0x534D4e82EA7eCA7F62c3fdf6D39A541be95Bf951";
-    //const [walletAddress, setOwner] = useState("")
-
-    const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5"; //process.env.REACT_APP_CONTRACT_ADDRESS;
-    //const contractAddress = configData.CONTRACT_ADDRESSES.TOAST_POLYGON_MAINNET;  //toasts polygon address
+    const [walletAddress, setOwner] = useState("")
+    const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5";  //toasts polygon address
     const [NFTs, setNFTs] = useState("")
-
-    console.log("Contract Address: ", contractAddress);
 
     return (
         <div>
@@ -28,9 +24,13 @@ const Viewer = () => {
                     </div>
 
                     <div className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2' >
-                        {         
-                            <Wallet></Wallet>
+                        {                    
+                            <Wallet></Wallet>       
                         }
+                    </div>
+
+                    <div className='flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2 '>
+                        <input className="border rounded-sm focus:outline-none py-2 px-3 w-full" value={walletAddress} onChange={(e) => setOwner(e.target.value)} placeholder='Insert your wallet address'></input>
                     </div>
                     <div className='w-2/6 flex justify-center'>
                     <button className='py-3 bg-white rounded-sm w-full hover:bg-slate-100' onClick={() => {fetchNFTs(walletAddress, contractAddress, setNFTs)}}>Display My Toasts</button>
