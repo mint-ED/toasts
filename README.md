@@ -1,160 +1,121 @@
 
-## mintED Toasts Frontend POC
-<br />
-<div align="center">
+# mintED TOASTS Frontend POC
 
-  <h3 align="center">Alchemy NFT API Demo</h3>
+## About this project
+<br/>
 
-  <p align="center">
-    Find, verify, and display any NFT with ease.
-    <br />
-     <a href="https://github.com/alchemyplatform/Build-Your-NFT-Explorer/">Alchemy NFT API repo »</a>
-    <br />
+<p>
+    The intention of this app is to build a basic frontend to support the creation and management of ERC1155-based NFTs.  These NFTs are distributed as tokens of appreciation (TOASTs) by owners of a Toast application. 
   </p>
 
-</div>
-  
+<p>
+    Note that this app is still a work in progress.  Contributions welcome! 
+  </p>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
+  <p>
+    The app will have the following components:
+  </p>
 
+* Viewer: User views the Toasts in their wallet
+* Explorer: User views NFTs in any wallet/contract combo
+* Creator: Admin creates and distributes Toasts
 
+<p>
+  This project is based the Alchemy NFT API, and is generally a fork of their repo <a href="https://github.com/alchemyplatform/Build-Your-NFT-Explorer/">here</a>
+</p>
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
-<img width="1600" alt="Screenshot 2022-02-03 at 18 11 09" src="https://user-images.githubusercontent.com/72762629/152393504-72162127-cf56-4de6-8f11-1653c24aa2b9.png">
+## Key Components
+<br/>
 
-Build your own multi-chain NFT Explorer using the new Alchemy NFT API! 
+* React: javascript framework for frontend development
+* Tailwind: CSS framework
+* Alchemy API:  library for obtaining NFT data
+* Node.js:  the project runs on node and requires node.js 16.13.x
+<br/>
 
+## Installation
 
-Built on top of ReactJs, this repo showcase the functionalities of the [Alchemy NFT API](https://www.alchemy.com/nft-api):
-- Keep track of your NFTs
-- Search NFTs by collection
-- Filter by an NFT Smart Contract address
-
-and display the images, attributes, collection name, and creator of your favorite NFTs.
-
-Supporting both ERC1155 and ERC721!
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-![Jan-21-2022 19-33-50-min](https://user-images.githubusercontent.com/72762629/150807611-5bf5ab02-e9a9-4cfb-95c2-61f2bf0f0e2f.gif)
-
-
-### Built With
-
-* [Alchemy](https://www.alchemy.com)
-* [React.js](https://reactjs.org/)
-* [TailwindCSS](https://getbootstrap.com)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-Getting started is super simple! Follow the following steps and start fetching NFTs on Ethereum!
+Follow these steps to setup this repo:
 
 ### Prerequisites
 
 - Node >= 16.13.x
-
-
 ### Installation
 
-
-1. Clone the repo
+1. Clone the github repo:
    ```sh
-   git clone https://github.com/alchemyplatform/Build-Your-NFT-Explorer.git
+   git clone https://github.com/mint-ED/minted-frontend-poc.git
    ```
-2. Install the dependencies
+2. CD into the project's root folder and install the dependencies:
    ```sh
    npm install
    ```
    
-3. Create an account on [Alchemy.com](https://www.alchemy.com/)
-4. Grab your Alchemy API Key
-5. Update `const apiKey = "demo";` in `src/utils/fetchNFTs.js` with your Alchemy API Key
-6. Run the application
-  ```sh
-  npm start
-  ```
+3. Setup (free) account on [Alchemy.com](https://www.alchemy.com/):
+   - The Alchemy API provides access to the GetNFTs API used in our app.
+   - Create an account.  Then under the Dashboard click Create App.  
+   - Enter a Name and Description.  
+   - Environment: Development.  Chain: Polygon.  Network: Mainnet. 
+   - After the App is setup, click on View Key and copy the HTTP url.  You'll use this in the next step.
   
-<p align="right">(<a href="#top">back to top</a>)</p>
+4. Create config file
+   - Rename the file ".env.example" to ".env.local".
+   - In the file's first line, create the following entry:  REACT_APP_ALCHEMY_POLYGON_MUMBAI="your-alchemy-key-goes here"
+  
 
-
+5. Run the application
+    ```sh
+    npm start
+    ```
+  
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-1. Insert a wallet address in the input field to retrieve all Ethereum NFTs associated with that address
-2. Insert the Smart contract address to retrieve owned NFTs by contract address
+The Toasts app will contain the following functionality:
 
-_For more examples, please refer to the [Documentation](https://docs.alchemy.com/alchemy/enhanced-apis/nft-api)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+- <b>Explorer</b>
+  - <u>Desired Fuctionality:</u> provide a Wallet Address and Contract Addresss, and return all NFTs associated with the wallet/contract combo.  Wallet Address must be provided, but Contract Address is optional.
+  - <u>Current State:</u> Working as expected.
+  - <u>Test It Out:</u> sample wallet/contract are provided on the page.
+  - <u>Next Steps:</u> make this a more engaging user experience. 
+- <b>Viewer</b>
+  - <u>Desired Fuctionality:</u>Connect your wallet, which then displays the NFTs in your wallet associated with the Toasts smart contract (which is pulled from project config and not provided by the user).
+  - <u>Current State:</u> Very clunky and partially complete.  Metamask wallet connect works, though this value then needs to be copy/pasted into the textbox.   
+  - <u>Test It Out:</u> sample wallet is provided on the page.
+  - <u>Next Steps:</u> Desired state is to remove the textbox and 'display my toasts' button and just refresh the page with NFTs once the wallet is connected. 
+- <b>Creator</b>
+  - <u>Desired Fuctionality:</u> Ad admin, upon connecting via Metamask, can view existing Toasts, create new Toasts, and airdrop Toasts to wallets.
+  - <u>Current State:</u> Not started. 
+  - <u>Test It Out:</u> n/a.  
+  - <u>Next Steps:</u> This will require integration into the Toasts smart contract.
 
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+We welcome contributions to our project!  
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+We follow basic open source best practices for contributing: creating a fork of our project, cloning, creating a new branch, issuing a pull request.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+[See here](https://www.dataschool.io/how-to-contribute-on-github/) for a good explanation of our contribution guidelines.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
+Please identify an issue from our [issues](https://github.com/mint-ED/minted-frontend-poc/issues) list in this repo, create a new branch, and have fun!
 ## License
 
 Distributed under the MIT License.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-<!-- CONTACT -->
 ## Contact
 
- - [@AlchemyPlatform](https://twitter.com/AlchemyPlatform)
- - [Discord](https://www.alchemy.com/discord)
+ - [gotminted.xyz](https://www.gotminted.xyz) - our website, with contact form
+ - [@gotmintED](https://twitter.com/gotmintED) - twitter
 
- This repo was originally created by the wonderful:
+ This repo was originally created by the team at Alchemy:
 
 - [@VittoStack](https://twitter.com/VittoStack)
 - [@thatguyintech](https://twitter.com/thatguyintech)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+
 
 
 

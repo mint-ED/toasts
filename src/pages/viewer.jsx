@@ -7,12 +7,13 @@ import {fetchNFTs} from '../utils/fetchNFTs';
 const Viewer = () => {
 
     const [walletAddress, setOwner] = useState("")
-    const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5";  //toasts polygon address
+    const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+    const sampleWallet = process.env.REACT_APP_SAMPLE_WALLET;
     const [NFTs, setNFTs] = useState("")
 
     return (
         <div>
-            <header className=' py-24  mb-12 w-full   alchemy'>
+            <header className=' py-24  mb-12 w-full   toasts'>
                 <div className='flex-grow flex justify-end mr-12 mb-12'>
                 </div>
                 <div className='flex flex-col items-center mb-12'>
@@ -35,6 +36,12 @@ const Viewer = () => {
                     <div className='w-2/6 flex justify-center'>
                     <button className='py-3 bg-white rounded-sm w-full hover:bg-slate-100' onClick={() => {fetchNFTs(walletAddress, contractAddress, setNFTs)}}>Display My Toasts</button>
                     </div>
+                    <br/>
+                    <div className=''>
+                    <p>Sample Wallet: {sampleWallet}</p> 
+                    <p>Contract Address: {contractAddress}</p> 
+                    </div>
+                    
                 </div>
             </header>
 
