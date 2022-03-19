@@ -8,13 +8,15 @@ const Explore = () => {
     const [walletAddress, setOwner] = useState("")
     const [contractAddress, setContractAddress] = useState("")
     const [NFTs, setNFTs] = useState("")
+    const sampleWallet = process.env.REACT_APP_SAMPLE_WALLET;
+    const sampleContractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
     console.log("Wallet Address: ", walletAddress);
     console.log("Contract Address: ", contractAddress);
 
     return (
         <div>
-            <header className='py-24  mb-12 w-full   alchemy'>
+            <header className='py-24  mb-12 w-full   toasts'>
                 <div className='flex-grow flex justify-end mr-12 mb-12'>
                 </div>
                 <div className='flex flex-col items-center mb-12'>
@@ -30,6 +32,10 @@ const Explore = () => {
                     </div>
                     <div className='w-2/6 flex justify-center'>
                     <button className='py-3 bg-white rounded-sm w-full hover:bg-slate-100' onClick={() => {fetchNFTs(walletAddress, contractAddress, setNFTs)}}>Search</button>
+                    </div>
+                    <div className=''>
+                    <p>Sample Wallet: {sampleWallet}</p> 
+                    <p>Contract Address: {sampleContractAddress}</p> 
                     </div>
                 </div>
             </header>

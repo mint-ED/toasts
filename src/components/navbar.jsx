@@ -1,13 +1,13 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Disclosure } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 
 const navigation = [
   { name: 'Dashboard', href: '/explorer', current: true },
   { name: 'Explorer', href: '/explorer', current: false },
   { name: 'Viewer', href: '/viewer', current: false },
-  { name: 'Admin', href: '#', current: false },
+  { name: 'Creator', href: '#', current: false },
 ]
 
 function classNames(...classes) {
