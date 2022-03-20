@@ -1,17 +1,15 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
-
-//var chai = require('chai');
-
-//require('@openzeppelin/hardhat-upgrades');
 require('dotenv').config();
+//require('@openzeppelin/hardhat-upgrades');
 
 console.log(process.env.MUMBAI_ALCHEMY_URL);
 
-const MUMBAI_ALCHEMY_URL  = process.env.MUMBAI_ALCHEMY_URL;
-const MUMBAI_DEV_KEY      = process.env.MUMBAI_DEV_KEY;
-const GANACHE_URL         = process.env.GANACHE_URL;
-//const GANACHE_URL       = "http://127.0.0.1:7545"
+const MUMBAI_ALCHEMY_URL            = process.env.MUMBAI_ALCHEMY_URL;
+const MUMBAI_DEV_KEY                = process.env.MUMBAI_DEV_KEY;
+const POLYGON_MAINNET_ALCHEMY_URL   = process.env.POLYGON_MAINNET_ALCHEMY_URL;
+const POLYGON_MAINNET_DEV_KEY       = process.env.POLYGON_MAINNET_DEV_KEY;
+const GANACHE_URL                   = process.env.GANACHE_URL;
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -26,6 +24,10 @@ const GANACHE_URL         = process.env.GANACHE_URL;
       mumbai: {
         url: `${MUMBAI_ALCHEMY_URL}`,
         //accounts: [`${MUMBAI_DEV_KEY}`]
+      },
+      polygonmainnet: {
+        url: `${POLYGON_MAINNET_ALCHEMY_URL}`,
+        //accounts: [`${POLYGON_MAINNET_DEV_KEY}`]
       }
   },
   solidity: {
