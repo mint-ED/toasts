@@ -233,6 +233,10 @@ node scripts/sample-script.js
 npx hardhat help
 ```
 
+##verify
+https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html
+
+mention how to setup polygonscan, etherscan, use the above instructions
 
 
 
