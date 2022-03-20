@@ -6,7 +6,7 @@ require("@nomiclabs/hardhat-ethers");
 //require('@openzeppelin/hardhat-upgrades');
 require('dotenv').config();
 
-console.log(process.env.GANACHE_URL);
+console.log(process.env.MUMBAI_ALCHEMY_URL);
 
 const MUMBAI_ALCHEMY_URL  = process.env.MUMBAI_ALCHEMY_URL;
 const MUMBAI_DEV_KEY      = process.env.MUMBAI_DEV_KEY;
