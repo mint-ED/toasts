@@ -7,7 +7,7 @@ async function main() {
   console.log("Deploying contracts with this account: ", deployer.address);
   console.log("Account balance: ", (await deployer.getBalance()).toString());
 
-  const Toast = await ethers.getContractFactory("contracts/TOAST.sol:TOASTS");
+  const Toast = await ethers.getContractFactory("TOASTS");
   const toast = await Toast.deploy();
   await toast.deployed();
 
