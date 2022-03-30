@@ -8,16 +8,14 @@ import {
 const contractAddress = "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5";  //toasts polygon address
 
 const Wallet = (props) => {
-  const [owner, setOwner] = useState("");
   const [status, setStatus] = useState("");
-  const [NFTs, setNFTs] = useState("")
 
-  console.log("Wallet Address: ", owner);
+  console.log("Wallet Address: ", props.walletAddress);
 
   useEffect(async () => {
     const { address, status } = await getCurrentWalletConnected();
 
-    setOwner(address);
+    props.setOwner(address);
     setStatus(status);
 
     addWalletListener();
@@ -27,10 +25,10 @@ const Wallet = (props) => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
-          setOwner(accounts[0]);
+          props.setOwner(accounts[0]);
           setStatus("Write a message in the text-field above.");
         } else {
-          setOwner("");
+          props.setOwner("");
           setStatus("Connect to Metamask using the top right button.");
         }
       });
@@ -51,17 +49,15 @@ const Wallet = (props) => {
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
-    setOwner(walletResponse.address);
+    props.setOwner(walletResponse.address);
   };
 
-  
-  
   return (
     <div className='w-2/6 flex justify-center' >
       <button id="walletButton py-3 bg-white rounded-sm w-full hover:bg-slate-100" onClick={connectWalletPressed} >
-        {owner.length > 0 ? (
+        {props.walletAddress ? (
           "Connected: " +
-          String(owner)
+          String(props.walletAddress)
         ) : (
           <span>Connect Wallet</span>
         )}
@@ -69,7 +65,7 @@ const Wallet = (props) => {
     </div>
   );
 
-  
+
 };
 
 export default Wallet;
