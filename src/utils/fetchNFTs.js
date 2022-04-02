@@ -2,16 +2,8 @@
 
 console.log("Environment: ", process.env.NODE_ENV)
 
-let endpoint = "";
-
 //requires the creation of a .env.local file at root
-if(process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI != null){
-    endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI;
-}
-else{
-    endpoint = "https://eth-mainnet.alchemyapi.io/v2/demo";
-}
-
+const endpoint = process.env.REACT_APP_ALCHEMY_POLYGON_MUMBAI || "https://eth-mainnet.alchemyapi.io/v2/demo";
 console.log("url: ", endpoint);
 
 const getAddressNFTs = async (owner, contractAddress, retryAttempt) => {
@@ -30,7 +22,7 @@ const getAddressNFTs = async (owner, contractAddress, retryAttempt) => {
                 data = await fetch(`${endpoint}/getNFTs?owner=${owner}`).then(data => data.json())
             }
         } catch (e) {
-            getAddressNFTs(endpoint, owner, contractAddress, retryAttempt+1)
+            getAddressNFTs(endpoint, owner, contractAddress, retryAttempt + 1)
         }
 
         // NFT token IDs basically
@@ -62,8 +54,8 @@ const formatNFTPayload = async (NFTS) => {
     return NFTsMetadata
 }
 
-const fetchNFTs = async (owner, contractAddress, setNFTs) => {
-    const data = await getAddressNFTs(owner, contractAddress)
+export const fetchNFTs = async (owner, contractAddress, setNFTs) => {
+    const data = await getAddressNFTs(owner, undefined, 0)
     if (data.ownedNfts.length) {
         const NFTs = await formatNFTPayload(data.ownedNfts);
         let fullfilledNFTs = NFTs.filter(NFT => NFT.status == "fulfilled")
@@ -72,5 +64,3 @@ const fetchNFTs = async (owner, contractAddress, setNFTs) => {
         setNFTs(null)
     }
 }
-
-export {fetchNFTs};
