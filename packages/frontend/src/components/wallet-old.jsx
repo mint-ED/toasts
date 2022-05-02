@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  connectWallet,
-  getCurrentWalletConnected
-} from "../utils/interact.js";
+import { connectWallet, getCurrentWalletConnected } from "../utils/interact.js";
 
 const Wallet = (props) => {
   const [walletAddress, setWallet] = useState("");
@@ -50,8 +47,6 @@ const Wallet = (props) => {
     setWallet(walletResponse.address);
   };
 
-  
-  
   return (
     <div className="wallet">
       <button id="walletButton" onClick={connectWalletPressed}>
@@ -66,8 +61,6 @@ const Wallet = (props) => {
       </button>
     </div>
   );
-
-  
 };
 
 export default Wallet;
