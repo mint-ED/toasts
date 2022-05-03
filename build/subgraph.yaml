@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: ToastContract
@@ -17,8 +17,8 @@ dataSources:
         - Toast
       abis:
         - name: ToastContract
-          file: ./abis/ToastContract.json
+          file: ToastContract\abis\ToastContract.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
-      file: ./src/mapping.ts
+      file: ToastContract\ToastContract.wasm
