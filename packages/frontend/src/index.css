@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,500;1,400&display=swap");
+
+.toasts {
+  background: linear-gradient(
+    267.45deg,
+    #e713e7 -34.23%,
+    rgb(52, 30, 165) 99.39%
+  );
+}
