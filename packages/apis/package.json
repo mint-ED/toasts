@@ -1,0 +1,37 @@
+{
+<<<<<<< HEAD
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.5.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^12.4.1",
+    "prettier": "2.6.2"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+=======
+  "name": "toast",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ saginawj/toast",
+    "create-local": "graph create --node http://localhost:8020/ saginawj/toast",
+    "remove-local": "graph remove --node http://localhost:8020/ saginawj/toast",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 saginawj/toast"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.29.1",
+    "@graphprotocol/graph-ts": "0.26.0"
+>>>>>>> apis/master
+  }
+}
