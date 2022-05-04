@@ -1,0 +1,24 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ToastContract
+    network: matic
+    source:
+      address: "0xa4A04947869D8201da08e5d9abfF0c5bA78689C5"
+      abi: ToastContract
+      startBlock: 26247550
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Toast
+      abis:
+        - name: ToastContract
+          file: ./abis/ToastContract.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/mapping.ts
