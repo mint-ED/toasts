@@ -1,0 +1,6 @@
+type Toast @entity {
+  id: ID!
+  owner: Bytes! # address
+  tokenId: BigInt
+  count: BigInt!
+}
