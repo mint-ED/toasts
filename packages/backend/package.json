@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
+    "@thirdweb-dev/cli": "^0.3.5",
+    "@thirdweb-dev/contracts": "^2.3.6",
     "dotenv": "^16.0.0"
   }
 }
