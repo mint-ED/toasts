@@ -217,30 +217,10 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
 
     //-------------------------------------------------------
     //Manage Events
-    event toastSingleToSingle(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount
-    );
-    event toastManyToSingle(
-        address from,
-        address to,
-        uint256[] ids,
-        uint256[] amounts
-    );
-    event toastSingleToMany(
-        address from,
-        address[] tos,
-        uint256[] ids,
-        uint256[] amounts
-    );
-    event toastManyToMany(
-        address from,
-        address[] tos,
-        uint256[] ids,
-        uint256[] amounts
-    );
+    event SingleToSingle(address to_, uint256 id_, uint256 amount_);
+    event ManyToSingle(address to_, uint256[] ids_, uint256[] amounts_);
+    event SingleToMany(address[] tos_, uint256 id_, uint256 amount_);
+    event ManyToMany(address[] tos_, uint256[] ids_, uint256[] amounts_);
 
     // Manage Minting
     function toastSingleToSingle(
@@ -267,7 +247,7 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
         }
 
         _mint(to_, id_, amount_, data_);
-        emit toastSingleToSingle(msg.sender, to, id, amount);
+        emit SingleToSingle(to_, id_, amount_);
     }
 
     function toastManyToSingle(
@@ -296,7 +276,7 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
 
         //mint
         _mintBatch(to_, ids_, amounts_, data_);
-        emit toastManyToSingle(msg.sender, to, ids, amounts);
+        emit ManyToSingle(to_, ids_, amounts_);
     }
 
     function toastSingleToMany(
@@ -327,7 +307,7 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], id_, amount_, data_);
         }
-        emit toastSingleToMany(msg.sender, to, ids, amounts);
+        emit SingleToMany(tos_, id_, amount_);
     }
 
     function toastManyToMany(
@@ -357,12 +337,11 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
             require(hasRole(ADMIN_ROLE, msg.sender));
             //require(isAdmin(msg.sender), "user is not an admin");
         }
-
         //mint
         for (uint256 i = 0; i < tos_.length; i++) {
             _mint(tos_[i], ids_[i], amounts_[i], data_);
         }
-        emit toastManyToMany(msg.sender, tos, ids, amounts);
+        emit ManyToMany(tos_, ids_, amounts_);
     }
 
     //-------------------------------------------------------
