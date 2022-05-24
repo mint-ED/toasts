@@ -219,18 +219,8 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
     //Manage Events
     event SingleToSingle(address to_, uint256 id_, uint256 amount_);
     event ManyToSingle(address to_, uint256[] ids_, uint256[] amounts_);
-    event SingleToMany(
-        address from,
-        address[] tos_,
-        uint256 id_,
-        uint256 amount_
-    );
-    event ManyToMany(
-        address from,
-        address[] tos_,
-        uint256[] ids_,
-        uint256[] amounts_
-    );
+    event SingleToMany(address[] tos_, uint256 id_, uint256 amount_);
+    event ManyToMany(address[] tos_, uint256[] ids_, uint256[] amounts_);
 
     // Manage Minting
     function toastSingleToSingle(
@@ -250,7 +240,6 @@ contract TOASTS is ERC1155, ERC1155Supply, AccessControl {
                 "max NFT limit exceeded"
             );
         }
-
         if (onlyAdmins == true) {
             require(hasRole(ADMIN_ROLE, msg.sender));
             //require(isAdmin(msg.sender), "user is not an admin");
