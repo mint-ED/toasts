@@ -140,7 +140,68 @@ describe("TOAST contract", function () {
       await expect(toast.toastManyToSingle(to,tokenId,amount, data)).to
       .emit(toast, "ManyToSingle").withArgs(bob.address, [0,1,2], [1,2,3]);
     });
+      
 
+    it("Should verify single-to-many: sunny day", async function () {
+      let tos = [alice.address, bob.address, owner.address];
+      let tokenId = 0;
+      let amount = 1;
+      let data = [];
+
+      const tx = await toast.toastSingleToMany(
+        tos,
+        tokenId,
+        amount,
+        data
+      );
+      await tx.wait();
+
+      expect(await toast.balanceOf(tos[0], tokenId)).to.equal(
+        amount  
+      );
+  
+    });
+
+    it("Should emit SingleToMany events", async function() {
+      let tos = [alice.address, bob.address, owner.address];
+      let tokenId = 0;
+      let amount = 1;
+      let data = [];
+
+      await expect(toast.toastSingleToMany(tos,tokenId,amount, data)).to
+      .emit(toast, "SingleToMany").withArgs(tos, 0, 1);
+    });
+      
+
+
+    it("Should verify many-to-many: sunny day", async function () {
+      let tos = [alice.address, bob.address, owner.address];
+      let tokenIds = [2,3,4];
+      let amounts = [3,4,5];
+      let data = [];
+
+      const tx = await toast.toastManyToMany(
+        tos,
+        tokenIds,
+        amounts,
+        data
+      );
+      await tx.wait();
+
+      expect(await toast.balanceOf(tos[1], tokenIds[1])).to.equal(amounts[1]);
+  
+    });
+
+    it("Should emit ManyToMany events", async function() {
+      let tos = [alice.address, bob.address, owner.address];
+      let tokenIds = [2,3,4];
+      let amounts = [3,4,5];
+      let data = [];
+
+      await expect(toast.toastManyToMany(tos,tokenIds,amounts, data)).to
+      .emit(toast, "ManyToMany").withArgs(tos, [2,3,4], [3,4,5]);
+    });
+      
     
   });
 
