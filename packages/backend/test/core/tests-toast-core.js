@@ -83,6 +83,7 @@ describe("TOAST contract", function () {
   describe("Token Minting Functionality", function () {
     it("Should verify single-to-single: sunny day", async function () {
       let tokenId = 0;
+      let to = bob.address
       let amount = 1;
       let data = [];
 
@@ -94,8 +95,20 @@ describe("TOAST contract", function () {
       );
       await tx.wait();
 
-      expect(await toast.balanceOf(alice.address, tokenId)).to.equal(amount);
+     expect(await toast.balanceOf(alice.address, tokenId)).to.equal(amount);
+      //await expect(toast.connect(alice).toastSingleToSingle(to,tokenId,amount,data)).to
+      //.emit(toast, "SingleToSingle").withArgs(alice.address, bob.address, 0, 1);
     });
+
+    it("Should emit SingleToSingle events", async function() {
+      let to = bob.address;
+      let tokenId = 0;
+      let amount = 1;
+      let data = []
+
+      await expect(toast.toastSingleToSingle(to,tokenId,amount, data)).to
+      .emit(toast, "SingleToSingle").withArgs(bob.address, 0, 1);
+    } )
 
     it("Should verify many-to-single: sunny day", async function () {
       let tokenIds = [0, 1, 2, 3, 4];
@@ -117,6 +130,18 @@ describe("TOAST contract", function () {
         amounts[1]
       );
     });
+
+    it("Should emit ManyToSingle events", async function() {
+      let to = bob.address;
+      let tokenId = [0,1,2];
+      let amount = [1,2,3];
+      let data = [];
+
+      await expect(toast.toastManyToSingle(to,tokenId,amount, data)).to
+      .emit(toast, "ManyToSingle").withArgs(bob.address, [0,1,2], [1,2,3]);
+    });
+
+    
   });
 
   describe("Token Exchange Functionality", function () {
@@ -327,3 +352,4 @@ describe("TOAST contract", function () {
     });
   });
 });
+
