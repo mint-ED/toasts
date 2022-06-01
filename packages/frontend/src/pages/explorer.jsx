@@ -25,13 +25,13 @@ const Explore = () => {
           </div>
           <div className="flex flex-col items-center justify-center mb-4 w-2/6 gap-y-2 ">
             <input
-              className="border rounded-sm focus:outline-none py-2 px-3 w-full"
+              className="border rounded focus:outline-none py-2 px-3 w-full"
               value={walletAddress}
               onChange={(e) => setOwner(e.target.value)}
               placeholder="Insert your wallet address"
             ></input>
             <input
-              className="focus:outline-none rounded-sm py-2 px-3 w-full"
+              className="focus:outline-none rounded py-2 px-3 w-full"
               value={contractAddress}
               onChange={(e) => setContractAddress(e.target.value)}
               placeholder="Insert NFT Contract address (optional)"
